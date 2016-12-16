@@ -57,6 +57,7 @@ Item {
     CheckBox {
         id: builtCheckBox
         text: qsTr("Built")
+        clip: true
         anchors.left: parent.right
         anchors.leftMargin: -81
         anchors.bottom: parent.top

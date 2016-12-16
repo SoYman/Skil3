@@ -47,6 +47,7 @@ Item {
     CheckBox {
         id: aliveCheckBox
         text: qsTr("Alive")
+        clip: true
         checked: true
         anchors.right: parent.left
         anchors.rightMargin: -81
