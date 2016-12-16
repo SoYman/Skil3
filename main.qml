@@ -122,9 +122,11 @@ ApplicationWindow {
                             peoplePage.peopleWorkingId = model.id
                             personEntry.nameTextField.text = model.name
                             personEntry.bornSpinBox.value = model.born
+                            personEntry.diedSpinBox.from = model.died >= model.born ? model.born : 0
                             personEntry.diedSpinBox.value = model.died
-                            personEntry.aliveCheckBox.checkState = model.died == 0
-                            //personEntry.genderListView
+                            personEntry.diedSpinBox.enabled = model.died >= model.born
+                            personEntry.aliveCheckBox.checkState = Number(model.died < model.born) * 2
+                            personEntry.genderButtonState = model.gender
                             personEntry.nationalityTextField.text = model.nationality
                         }
                     }

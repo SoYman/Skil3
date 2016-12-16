@@ -3,6 +3,9 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Universal 2.0
 
 PersonEntryForm {
+    //property alias genderButtonGroup: genderButtonGroup
+    property string genderButtonState: "Unspecified"
+
     bornSpinBox {
         editable: true
     }
@@ -10,21 +13,16 @@ PersonEntryForm {
         editable: true
     }
 
-    ButtonGroup {
-        id: genderButtonGroup
-    }
-
     genderListView {
-        model: ["Male", "Female", "Unspecified"]
+        model: [ "Unspecified", "Female", "Male" ]
+
         delegate: RadioDelegate {
             id: genderRadioDelegate
-            checked: index == 0
-            ButtonGroup.group: genderButtonGroup
+            checked: modelData == genderButtonState
 
             contentItem: Text {
                 leftPadding: genderRadioDelegate.indicator.width + genderRadioDelegate.spacing
                 text: modelData
-                opacity: enabled ? 1.0 : 0.3
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
@@ -32,7 +30,6 @@ PersonEntryForm {
             indicator: Rectangle {
                 implicitWidth: 20
                 implicitHeight: 20
-                //x: genderRadioDelegate.width - width - genderRadioDelegate.leftPadding
                 x: parent.height / 2 - height / 2
                 y: parent.height / 2 - height / 2
                 radius: 10
@@ -44,7 +41,7 @@ PersonEntryForm {
                     x: 5
                     y: 5
                     radius: 5
-                    color: genderRadioDelegate.down ? Universal.background : Universal.foreground
+                    color: Universal.background
                     visible: genderRadioDelegate.checked
                 }
             }

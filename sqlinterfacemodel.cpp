@@ -146,7 +146,7 @@ QVariant SqlInterfaceModel::data(const QModelIndex &idx, int role) const
     }
 
     const QSqlRecord sqlRecord = record(idx.row());
-    qDebug() << "data: " << sqlRecord.value(role - Qt::UserRole) << endl;
+    //qDebug() << "data: " << sqlRecord.value(role - Qt::UserRole) << endl;
     return sqlRecord.value(role - Qt::UserRole);
 }
 
