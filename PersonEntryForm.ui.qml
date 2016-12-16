@@ -2,14 +2,15 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 
 Item {
-    id: computerEntryForm
+    id: item1
     width: 400
-    height: 400
-    property alias typeTextField: typeTextField
-    property alias relationListView: relationListView
-    property alias builtCheckBox: builtCheckBox
-    property alias yearSpinBox: yearSpinBox
+    height: 800
     property alias nameTextField: nameTextField
+    property alias bornSpinBox: bornSpinBox
+    property alias diedSpinBox: diedSpinBox
+    property alias genderListView: genderListView
+    property alias nationalityTextField: nationalityTextField
+    property alias listView1: listView1
     property alias removeButton: removeButton
 
     TextField {
@@ -17,74 +18,72 @@ Item {
         placeholderText: qsTr("Name")
         anchors.bottom: parent.top
         anchors.bottomMargin: -48
-        anchors.right: parent.right
-        anchors.rightMargin: 8
-        anchors.left: parent.left
-        anchors.leftMargin: 8
         anchors.top: parent.top
         anchors.topMargin: 8
+        anchors.left: parent.left
+        anchors.leftMargin: 8
+        anchors.right: parent.right
+        anchors.rightMargin: 8
     }
 
     SpinBox {
-        id: yearSpinBox
-        anchors.bottom: parent.top
-        anchors.bottomMargin: -94
-        anchors.right: parent.left
-        anchors.rightMargin: -148
-        anchors.top: parent.top
-        anchors.topMargin: 54
-        anchors.left: parent.left
-        anchors.leftMargin: 8
-        enabled: true
-        to: 2017
+        id: bornSpinBox
+        x: 8
+        y: 54
+        from: 0
         value: 1991
+        to: 2017
     }
 
-
-    Label {
-        id: yearLabel
-        text: qsTr("Year designed")
-        anchors.right: parent.left
-        anchors.rightMargin: -234
-        anchors.bottom: parent.top
-        anchors.bottomMargin: -83
-        anchors.top: parent.top
-        anchors.topMargin: 66
-        anchors.left: parent.left
-        anchors.leftMargin: 154
+    SpinBox {
+        id: diedSpinBox
+        x: 8
+        y: 100
+        from: bornSpinBox.value
+        to: 2017
     }
 
     CheckBox {
-        id: builtCheckBox
-        text: qsTr("Built")
-        anchors.left: parent.right
-        anchors.leftMargin: -81
+        id: aliveCheckBox
+        text: qsTr("Alive")
+        checked: true
+        anchors.right: parent.left
+        anchors.rightMargin: -81
+        anchors.left: parent.left
+        anchors.leftMargin: 8
         anchors.bottom: parent.top
-        anchors.bottomMargin: -94
+        anchors.bottomMargin: -186
         anchors.top: parent.top
-        anchors.topMargin: 54
-        anchors.right: parent.right
-        anchors.rightMargin: 8
+        anchors.topMargin: 146
     }
 
     TextField {
-        id: typeTextField
-        placeholderText: qsTr("Type of computer")
-        anchors.bottom: parent.top
-        anchors.bottomMargin: -140
+        id: nationalityTextField
+        placeholderText: qsTr("Nationality")
         anchors.top: parent.top
-        anchors.topMargin: 100
-        anchors.right: parent.right
-        anchors.rightMargin: 8
+        anchors.topMargin: 192
+        anchors.bottom: parent.top
+        anchors.bottomMargin: -232
         anchors.left: parent.left
         anchors.leftMargin: 8
+        anchors.right: parent.right
+        anchors.rightMargin: 8
     }
 
     ListView {
-        id: relationListView
+        id: genderListView
+        x: 262
+        y: 54
+        width: 130
+        height: 132
+        interactive: false
+    }
+
+    ListView {
+        id: listView1
         clip: true
         anchors.top: parent.top
-        anchors.topMargin: 146
+        anchors.topMargin: 238
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 54
         anchors.left: parent.left
@@ -136,14 +135,29 @@ Item {
 
     Button {
         id: removeButton
-        text: qsTr("Remove")
+        text: qsTr("Button")
         anchors.top: parent.bottom
         anchors.topMargin: -48
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 8
-        anchors.left: parent.left
-        anchors.leftMargin: 8
         anchors.right: parent.right
         anchors.rightMargin: 8
+        anchors.left: parent.left
+        anchors.leftMargin: 8
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 8
+    }
+
+
+    Label {
+        id: label1
+        x: 154
+        y: 66
+        text: qsTr("Born")
+    }
+
+    Label {
+        id: label2
+        x: 154
+        y: 112
+        text: qsTr("Died")
     }
 }

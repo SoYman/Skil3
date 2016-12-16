@@ -4,6 +4,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Universal 2.0
 import QtQuick.Layouts 1.0
 import com.soyman.sqlcomputermodel 1.0
+import com.soyman.sqlinterfacemodel 1.0
 
 ApplicationWindow {
     id: root
@@ -13,8 +14,6 @@ ApplicationWindow {
     title: qsTr("Computers'n'people")
     Universal.theme: Universal.Dark
 
-    property string computerFilter
-    property string computerFilterType
 
 
     SwipeView {
@@ -23,27 +22,93 @@ ApplicationWindow {
         currentIndex: tabBar.currentIndex
 
         SplitView {
+            id: computerView
+            property int computerWorkingId: -1
 
             ComputerEntry {
+                id: computerEntry
+                nameTextField.onAccepted: {
+                }
+
                 removeButton.onReleased: {
-}
+                }
                 Layout.minimumWidth: 333
             }
 
             BaseList {
                 id: computerPage
                 Layout.fillWidth: true
+                property string computerFilter
+                property string computerFilterType
 
-                    filterField.onAccepted: {
-                        computerFilter = filterField.displayText
+                filterTypeBox {
+                    model: ["Name", "Year", "Type", "Made", "ID"]
+                    onDisplayTextChanged: {
+                        computerPage.computerFilterType = filterTypeBox.currentText
                     }
+                }
 
-                filterTypeBox.model: ["Name", "Year", "Type", "Made", "ID"]
+                filterField.onAccepted: {
+                    computerPage.computerFilter = filterField.displayText
+                }
 
                 list {
-                    model: SqlComputerModel {
-                        filter: computerFilter
-                        filterType: computerFilterType
+                    model: SqlInterfaceModel {
+                        table: "Computers"
+                        filter: computerPage.computerFilter
+                        filterType: computerPage.computerFilterType
+                        workingId: computerView.computerWorkingId
+                    }
+
+                    delegate: ItemDelegate {
+                        width: parent.width
+
+                        text: model.name
+                        onClicked: {
+                            computerView.computerWorkingId = model.id
+                            computerEntry.nameTextField.text = model.name
+                            computerEntry.yearSpinBox.value = model.year
+                            computerEntry.builtCheckBox.checkState = model.made*2
+                            computerEntry.typeTextField.text = model.type
+                        }
+                    }
+                }
+            }
+        }
+
+        SplitView {
+
+            PersonEntry {
+                id: personEntry
+                removeButton.onReleased: {
+                }
+                Layout.minimumWidth: 333
+            }
+
+            BaseList {
+                id: peoplePage
+                Layout.fillWidth: true
+                property string peopleFilter
+                property string peopleFilterType
+                property int peopleWorkingId: -1
+
+                filterTypeBox {
+                    model: ["Name", "Born", "Died", "Gender", "Nationality"]
+                    onDisplayTextChanged: {
+                        peopleFilterType = filterTypeBox.currentText
+                    }
+                }
+
+                filterField.onAccepted: {
+                    peopleFilter = filterField.displayText
+                }
+
+                list {
+                    model: SqlInterfaceModel {
+                        table: "People"
+                        filter: peoplePage.peopleFilter
+                        filterType: peoplePage.peopleFilterType
+                        workingId: peoplePage.peopleWorkingId
 
                     }
 
@@ -52,84 +117,18 @@ ApplicationWindow {
 
                         text: model.name
                         onClicked: {
-
+                            peoplePage.peopleWorkingId = model.id
+                            personEntry.nameTextField.text = model.name
+                            personEntry.bornSpinBox.value = model.born
+                            personEntry.diedSpinBox.value = model.died
+                            //personEntry.genderListView
+                            personEntry.nationalityTextField.text = model.nationality
                         }
                     }
                 }
             }
         }
-
 /*
-        PageForm {
-            filterTypeBox.onDisplayTextChanged: {
-            }
-            filterTypeBox.model: ["Nmae", "Born", "Died", "Gender", "Nationality"]
-            list.delegate: CheckDelegate {
-                id: control
-                text: qsTr("CheckDelegate")
-                checked: true
-
-                contentItem: Text {
-                    rightPadding: control.indicator.width + control.spacing
-                    text: control.text
-                    font: control.font
-                    opacity: enabled ? 1.0 : 0.3
-                    color: control.down ? "#17a81a" : "#21be2b"
-                    elide: Text.ElideRight
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                indicator: Rectangle {
-                    implicitWidth: 26
-                    implicitHeight: 26
-                    x: control.width - width - control.rightPadding
-                    y: control.topPadding + control.availableHeight / 2 - height / 2
-                    radius: 3
-                    color: "transparent"
-                    border.color: control.down ? "#17a81a" : "#21be2b"
-
-                    Rectangle {
-                        width: 14
-                        height: 14
-                        x: 6
-                        y: 6
-                        radius: 2
-                        color: control.down ? "#17a81a" : "#21be2b"
-                        visible: control.checked
-                    }
-                }
-
-                background: Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 40
-                    visible: control.down || control.highlighted
-                    color: control.down ? "#bdbebf" : "#eeeeee"
-                }
-            }
-            list.model: ListModel {
-                ListElement {
-                    name: "Grey"
-                    colorCode: "grey"
-                }
-
-                ListElement {
-                    name: "Red"
-                    colorCode: "red"
-                }
-
-                ListElement {
-                    name: "Blue"
-                    colorCode: "blue"
-                }
-
-                ListElement {
-                    name: "Green"
-                    colorCode: "green"
-                }
-            }
-        }
-
         PageForm {
             list.delegate: Item {
                 x: 5

@@ -4,5 +4,7 @@
         <file>ComputerEntry.qml</file>
         <file>ComputerEntryForm.ui.qml</file>
         <file>BaseList.qml</file>
+        <file>PersonEntry.qml</file>
+        <file>PersonEntryForm.ui.qml</file>
     </qresource>
 </RCC>

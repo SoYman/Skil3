@@ -27,9 +27,6 @@ Item {
         anchors.leftMargin: -158
         anchors.right: parent.right
         anchors.rightMargin: 8
-        onDisplayTextChanged: {
-            computerFilterType = currentText
-        }
     }
 
     ListView {

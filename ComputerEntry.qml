@@ -3,12 +3,15 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Universal 2.0
 
 ComputerEntryForm {
-
-//    removeButton.contentItem: Text {
-//        text: qsTr("Remove")
-//        horizontalAlignment: Text.AlignHCenter
-//        verticalAlignment: Text.AlignVCenter
-//    }
+    typeTextField.onAccepted: {
+}
+    relationListView.onActiveFocusChanged: {
+    }
+    builtCheckBox.onCanceled: {
+    }
+    yearSpinBox {
+        editable: true
+    }
 
     removeButton.background: Rectangle {
         border.color: Universal.color(Universal.Red)

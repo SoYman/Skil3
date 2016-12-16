@@ -43,7 +43,7 @@ QString SqlComputerModel::filter() const
     return _filter;
 }
 
-void SqlComputerModel::setAFilter(const QString &filter)
+void SqlComputerModel::setFilter(const QString &filter)
 {
     _filter = filter;
 
@@ -71,7 +71,7 @@ void SqlComputerModel::setFilterType(const QString &filterType)
 
     _filter_type = filterType.toLower();
 
-    setAFilter(_filter);
+    setFilter(_filter);
 
 //    setSort();
     select();
