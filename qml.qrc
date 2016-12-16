@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>PageForm.ui.qml</file>
+        <file>ComputerEntry.qml</file>
+        <file>ComputerEntryForm.ui.qml</file>
+        <file>BaseList.qml</file>
     </qresource>
 </RCC>

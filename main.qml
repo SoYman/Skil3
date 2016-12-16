@@ -1,5 +1,7 @@
 import QtQuick 2.7
+import QtQuick.Controls 1.4
 import QtQuick.Controls 2.0
+import QtQuick.Controls.Universal 2.0
 import QtQuick.Layouts 1.0
 import com.soyman.sqlcomputermodel 1.0
 
@@ -9,43 +11,55 @@ ApplicationWindow {
     width: 640
     height: 480
     title: qsTr("Computers'n'people")
+    Universal.theme: Universal.Dark
 
     property string computerFilter
     property string computerFilterType
+
 
     SwipeView {
         id: swipeView
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
 
-        PageForm {
-            id: computerPage
+        SplitView {
 
-            filterField.onAccepted: {
-                computerFilter = filterField.displayText
-    }
-
-            filterTypeBox.model: ["Name", "Year", "Type", "Made", "ID"]
-            filterTypeBox.onDisplayTextChanged: {
-                computerFilterType = filterTypeBox.currentText
-    }
-
-            list.model: SqlComputerModel {
-                filter: computerFilter
-                filterType: computerFilterType
-
+            ComputerEntry {
+                removeButton.onReleased: {
+}
+                Layout.minimumWidth: 333
             }
 
-            list.delegate: SwipeDelegate {
-                width: parent.width
-                contentItem: Text {
-                    text: model.name
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
+            BaseList {
+                id: computerPage
+                Layout.fillWidth: true
+
+                    filterField.onAccepted: {
+                        computerFilter = filterField.displayText
+                    }
+
+                filterTypeBox.model: ["Name", "Year", "Type", "Made", "ID"]
+
+                list {
+                    model: SqlComputerModel {
+                        filter: computerFilter
+                        filterType: computerFilterType
+
+                    }
+
+                    delegate: ItemDelegate {
+                        width: parent.width
+
+                        text: model.name
+                        onClicked: {
+
+                        }
+                    }
                 }
             }
         }
 
+/*
         PageForm {
             filterTypeBox.onDisplayTextChanged: {
             }
@@ -158,7 +172,7 @@ ApplicationWindow {
                     colorCode: "green"
                 }
             }
-        }
+        }*/
     }
 
     footer: TabBar {

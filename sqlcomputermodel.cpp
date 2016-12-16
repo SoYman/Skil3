@@ -53,7 +53,6 @@ void SqlComputerModel::setAFilter(const QString &filter)
         QSqlTableModel::setFilter(_filter_type + " LIKE '%" + _filter + "%'");
     }
 
-    qDebug() << selectStatement();
     select();
     emit filterChanged();
     qDebug() << QSqlTableModel::filter();
@@ -73,7 +72,8 @@ void SqlComputerModel::setFilterType(const QString &filterType)
     _filter_type = filterType.toLower();
 
     setAFilter(_filter);
-    qDebug() << selectStatement();
+
+//    setSort();
     select();
 
     emit filterTypeChanged();

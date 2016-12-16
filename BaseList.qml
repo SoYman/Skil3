@@ -3,20 +3,10 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 
 Item {
-    id: frame
-    property alias list: list
-    property alias filterTypeBox: filterTypeBox
+    id: baseList
     property alias filterField: filterField
-
-    ComboBox {
-        id: filterTypeBox
-        y: 8
-        height: 40
-        anchors.left: parent.right
-        anchors.leftMargin: -158
-        anchors.right: parent.right
-        anchors.rightMargin: 8
-    }
+    property alias filterTypeBox: filterTypeBox
+    property alias list: list
 
     TextField {
         id: filterField
@@ -27,6 +17,19 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 8
         placeholderText: qsTr("Text Field")
+    }
+
+    ComboBox {
+        id: filterTypeBox
+        y: 8
+        height: 40
+        anchors.left: parent.right
+        anchors.leftMargin: -158
+        anchors.right: parent.right
+        anchors.rightMargin: 8
+        onDisplayTextChanged: {
+            computerFilterType = currentText
+        }
     }
 
     ListView {
@@ -40,7 +43,5 @@ Item {
         anchors.bottomMargin: 8
         anchors.top: parent.top
         anchors.topMargin: 54
-
     }
-
 }
