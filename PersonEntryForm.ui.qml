@@ -8,6 +8,7 @@ Item {
     property alias nameTextField: nameTextField
     property alias bornSpinBox: bornSpinBox
     property alias diedSpinBox: diedSpinBox
+    property alias aliveCheckBox: aliveCheckBox
     property alias genderListView: genderListView
     property alias nationalityTextField: nationalityTextField
     property alias listView1: listView1

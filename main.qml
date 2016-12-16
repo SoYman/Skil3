@@ -9,8 +9,10 @@ import com.soyman.sqlinterfacemodel 1.0
 ApplicationWindow {
     id: root
     visible: true
-    width: 640
-    height: 480
+    width: 666
+    minimumWidth: 666
+    height: 666
+    minimumHeight: 666
     title: qsTr("Computers'n'people")
     Universal.theme: Universal.Dark
 
@@ -121,6 +123,7 @@ ApplicationWindow {
                             personEntry.nameTextField.text = model.name
                             personEntry.bornSpinBox.value = model.born
                             personEntry.diedSpinBox.value = model.died
+                            personEntry.aliveCheckBox.checkState = model.died == 0
                             //personEntry.genderListView
                             personEntry.nationalityTextField.text = model.nationality
                         }
