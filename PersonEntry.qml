@@ -3,7 +3,6 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Universal 2.0
 
 PersonEntryForm {
-    //property alias genderButtonGroup: genderButtonGroup
     property string genderButtonState: "Unspecified"
 
     bornSpinBox {
@@ -45,12 +44,6 @@ PersonEntryForm {
                     visible: genderRadioDelegate.checked
                 }
             }
-//            background: Rectangle {
-//                implicitWidth: 100
-//                implicitHeight: 40
-//                visible: genderRadioDelegate.down || genderRadioDelegate.highlighted
-//                color: genderRadioDelegate.down ? "#bdbebf" : "#eeeeee"
-//            }
         }
     }
 

@@ -1,4 +1,4 @@
-#include "sqlinterfacemodel.h"
+﻿#include "sqlinterfacemodel.h"
 
 #include <QDebug>
 #include <QSqlError>
@@ -127,45 +127,82 @@ void SqlInterfaceModel::setFilterType(const QString &filterType)
     emit filterTypeChanged();
 }
 
-qint64 SqlInterfaceModel::workingId() const
+qint64 SqlInterfaceModel::workingRow() const
 {
-    return _working_id;
+    return _working_row;
 }
 
-void SqlInterfaceModel::setWorkingId(qint64 &workingId)
+void SqlInterfaceModel::setWorkingRow(qint64 &workingRow)
 {
-    _working_id = workingId;
-    qDebug() << "the working id is " << _working_id << endl;
-    emit workingIdChanged();
+    _working_row = workingRow;
+    qDebug() << "the working id is " << _working_row << endl;
+    emit workingRowChanged();
 }
 
 QVariant SqlInterfaceModel::data(const QModelIndex &idx, int role) const
 {
+    qDebug() << QVariant(idx.row()) << "\t" << role - Qt::UserRole;
     if (role < Qt::UserRole) {
         return QSqlTableModel::data(idx, role);
     }
 
     const QSqlRecord sqlRecord = record(idx.row());
     //qDebug() << "data: " << sqlRecord.value(role - Qt::UserRole) << endl;
-    return sqlRecord.value(role - Qt::UserRole);
+    int finalRole = role - Qt::UserRole;
+
+    // QSqlTableModel and Qt Quick 2 don't like sharing row numbers
+    if (finalRole == 0) {
+        return QVariant(idx.row());
+    } else {
+        return sqlRecord.value(finalRole - 1);
+    }
 }
+
+//bool SqlInterfaceModel::setData(const QModelIndex &idx, const QVariant &val, int role)
+//{
+//    if (role < Qt::UserRole) {
+//        return QSqlTableModel::setData(idx, val, role);
+//    }
+
+//    QSqlRecord sqlRecord = record(idx.row());
+//    qDebug() << "data was: " << sqlRecord.value(role - Qt::UserRole) << endl;
+//    sqlRecord.setValue(role - Qt::UserRole, val);
+//    qDebug() << "data is:  " << sqlRecord.value(role - Qt::UserRole) << endl;
+//    return setRecord(idx.row(), sqlRecord);
+//}
 
 QHash<int, QByteArray> SqlInterfaceModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
+    roles[Qt::UserRole] = "row";
+    roles[Qt::UserRole + 1] = "id";
+    roles[Qt::UserRole + 2] = "name";
     if (_table == "Computers") {
-        roles[Qt::UserRole] = "id";
-        roles[Qt::UserRole + 1] = "name";
-        roles[Qt::UserRole + 2] = "year";
-        roles[Qt::UserRole + 3] = "type";
-        roles[Qt::UserRole + 4] = "made";
+        roles[Qt::UserRole + 3] = "year";
+        roles[Qt::UserRole + 4] = "type";
+        roles[Qt::UserRole + 5] = "made";
     } else if (_table == "People") {
-        roles[Qt::UserRole] = "id";
-        roles[Qt::UserRole + 1] = "name";
-        roles[Qt::UserRole + 2] = "born";
-        roles[Qt::UserRole + 3] = "died";
-        roles[Qt::UserRole + 4] = "gender";
-        roles[Qt::UserRole + 5] = "nationality";
+        roles[Qt::UserRole + 3] = "born";
+        roles[Qt::UserRole + 4] = "died";
+        roles[Qt::UserRole + 5] = "gender";
+        roles[Qt::UserRole + 6] = "nationality";
     }
     return roles;
+}
+
+void SqlInterfaceModel::setValue(const QString &field, const QVariant &val)
+{
+    QSqlRecord sqlRecord = record(_working_row);
+    //qDebug() << "data was: " << sqlRecord.value(field) << endl;
+    for (int i = 0; i < sqlRecord.count(); i++) {
+        //qDebug() << sqlRecord.value(i) << endl;
+        sqlRecord.setGenerated(i, false);
+    }
+    sqlRecord.setGenerated(field, true);
+    sqlRecord.setValue(field, val);
+
+    //qDebug() << "data is:  " << sqlRecord.value(field) << endl;
+    //qDebug() << "the working id is " << _working_row << endl;
+    qDebug() << setRecord(_working_row, sqlRecord);
+    //submit();
 }

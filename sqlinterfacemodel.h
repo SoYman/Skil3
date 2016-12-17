@@ -9,7 +9,7 @@ class SqlInterfaceModel : public QSqlTableModel
     Q_PROPERTY(QString table READ table WRITE setTable NOTIFY tableChanged)
     Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
     Q_PROPERTY(QString filterType READ filterType WRITE setFilterType NOTIFY filterTypeChanged)
-    Q_PROPERTY(qint64 workingId READ workingId WRITE setWorkingId NOTIFY workingIdChanged)
+    Q_PROPERTY(qint64 workingRow READ workingRow WRITE setWorkingRow NOTIFY workingRowChanged)
 
 public:
 
@@ -25,23 +25,27 @@ public:
     QString filterType() const;
     void setFilterType(const QString &filterType);
 
-    qint64 workingId() const;
-    void setWorkingId(qint64 &workingId);
+    qint64 workingRow() const;
+    void setWorkingRow(qint64 &workingId);
 
     QVariant data(const QModelIndex &idx, int role) const Q_DECL_OVERRIDE;
+//    bool setData(const QModelIndex &idx, const QVariant &val, int role) Q_DECL_OVERRIDE;
+
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+
+    Q_INVOKABLE void setValue(const QString &field, const QVariant &val);
 
 signals:
     void tableChanged();
     void filterChanged();
     void filterTypeChanged();
-    void workingIdChanged();
+    void workingRowChanged();
 
 private:
     QString _table;
     QString _filter;
     QString _filter_type;
-    qint64 _working_id;
+    qint64 _working_row;
 
     qint64 _filterTypeEnum();
 };

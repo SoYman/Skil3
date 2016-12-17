@@ -9,9 +9,9 @@ import com.soyman.sqlinterfacemodel 1.0
 ApplicationWindow {
     id: root
     visible: true
-    width: 666
+    width: 900
     minimumWidth: 666
-    height: 666
+    height: 900
     minimumHeight: 666
     title: qsTr("Computers'n'people")
     Universal.theme: Universal.Dark
@@ -25,11 +25,22 @@ ApplicationWindow {
 
         SplitView {
             id: computerView
-            property int computerWorkingId: -1
+            property int computerWorkingRow: -1
 
             ComputerEntry {
                 id: computerEntry
-                nameTextField.onAccepted: {
+                nameTextField.onDisplayTextChanged: {
+                    computerPage.list.model.setValue("name", nameTextField.displayText)
+                }
+                yearSpinBox.onValueChanged: {
+                    computerPage.list.model.setValue("year", yearSpinBox.value)
+                }
+                builtCheckBox.onCheckStateChanged: {
+                    computerPage.list.model.setValue("made", builtCheckBox.checkState / 2)
+                }
+                typeTextField.onDisplayTextChanged: {
+                    computerPage.list.model.setValue("type", typeTextField.displayText)
+
                 }
 
                 removeButton.onReleased: {
@@ -59,15 +70,16 @@ ApplicationWindow {
                         table: "Computers"
                         filter: computerPage.computerFilter
                         filterType: computerPage.computerFilterType
-                        workingId: computerView.computerWorkingId
+                        workingRow: computerView.computerWorkingRow
                     }
 
                     delegate: ItemDelegate {
                         width: parent.width
 
                         text: model.name
+                        // Display computer in sidebar
                         onClicked: {
-                            computerView.computerWorkingId = model.id
+                            computerView.computerWorkingRow = model.row
                             computerEntry.nameTextField.text = model.name
                             computerEntry.yearSpinBox.value = model.year
                             computerEntry.builtCheckBox.checkState = model.made*2
@@ -82,6 +94,11 @@ ApplicationWindow {
 
             PersonEntry {
                 id: personEntry
+                nameTextField.onDisplayTextChanged: {
+                    peoplePage.list.model.setValue("name", nameTextField.displayText)
+                }
+
+
                 removeButton.onReleased: {
                 }
                 Layout.minimumWidth: 333
@@ -92,7 +109,7 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 property string peopleFilter
                 property string peopleFilterType
-                property int peopleWorkingId: -1
+                property int peopleWorkingRow: -1
 
                 filterTypeBox {
                     model: ["Name", "Born", "Died", "Gender", "Nationality"]
@@ -110,7 +127,7 @@ ApplicationWindow {
                         table: "People"
                         filter: peoplePage.peopleFilter
                         filterType: peoplePage.peopleFilterType
-                        workingId: peoplePage.peopleWorkingId
+                        workingRow: peoplePage.peopleWorkingRow
 
                     }
 
@@ -118,8 +135,10 @@ ApplicationWindow {
                         width: parent.width
 
                         text: model.name
+                        // Display person in sidebar
                         onClicked: {
-                            peoplePage.peopleWorkingId = model.id
+                            console.log(model.row)
+                            peoplePage.peopleWorkingRow = model.row
                             personEntry.nameTextField.text = model.name
                             personEntry.bornSpinBox.value = model.born
                             personEntry.diedSpinBox.from = model.died >= model.born ? model.born : 0

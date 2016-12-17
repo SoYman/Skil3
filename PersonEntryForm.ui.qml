@@ -137,7 +137,7 @@ Item {
 
     Button {
         id: removeButton
-        text: qsTr("Button")
+        text: qsTr("Remove")
         anchors.top: parent.bottom
         anchors.topMargin: -48
         anchors.right: parent.right
