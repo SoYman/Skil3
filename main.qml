@@ -35,22 +35,33 @@ ApplicationWindow {
                 Layout.minimumWidth: 333
 
                 filterTypeBox {
-                    model: ["Name", "Year", "Type", "Made", "ID"]
+                    model: ["ID", "Name", "Year", "Type", "Made"]
                 }
 
                 filterField.onDisplayTextChanged: {
-                    computerPage.filter = filterField.displayText
+                    computerPage.baseFilter = filterField.displayText
                 }
 
                 list.model: SqlInterfaceModel {
                     table: "Computers"
-                    filter: computerPage.filter
-                    filterType: computerPage.filterType
-                    workingRow: computerPage.workingRow
+                    filter: computerPage.baseFilter
+                    filterType: computerPage.baseFilterType
+                    workingRow: computerPage.baseWorkingRow
                 }
 
                 list.delegate: computerItemDelegate
 
+                addButton.onClicked: {
+                    filterTypeBox.currentIndex = 1
+                    list.model.setFilterType(filterTypeBox.currentText)
+                    filterTypeBox.currentIndex = 0
+                    list.model.setFilterType(filterTypeBox.currentText)
+                    baseWorkingRow = 0
+                    if (list.model.insertRow(baseWorkingRow)) {
+                        list.currentIndex = 0
+                        computerEntry.nameTextField.forceActiveFocus()
+                    }
+                }
 
             }
 
@@ -63,7 +74,7 @@ ApplicationWindow {
 
 
                     onHighlightedChanged: {
-                        computerPage.workingRow = index
+                        computerPage.baseWorkingRow = index
                         computerEntry.nameTextField.text = model.name
                         computerEntry.yearSpinBox.value = model.year
                         computerEntry.builtCheckBox.checkState = model.made * 2
@@ -85,30 +96,38 @@ ApplicationWindow {
             BaseList {
                 id: peoplePage
                 Layout.minimumWidth: 333
-//                property string peopleFilter
-//                property string peopleFilterType
-  //              property int peopleWorkingRow: -1
 
                 filterTypeBox {
-                    model: ["Name", "Born", "Died", "Gender", "Nationality"]
+                    model: ["ID", "Name", "Born", "Died", "Gender", "Nationality"]
                 }
 
                 filterField.onDisplayTextChanged: {
-                    filter = filterField.displayText
+                    baseFilter = filterField.displayText
                 }
 
                 list.model: SqlInterfaceModel {
                     table: "People"
-                    filter: peoplePage.filter
-                    filterType: peoplePage.filterType
-                    workingRow: peoplePage.workingRow
+                    filter: peoplePage.baseFilter
+                    filterType: peoplePage.baseFilterType
+                    workingRow: peoplePage.baseWorkingRow
                 }
 
                 list.delegate: peopleItemDelegate
 
                 addButton.onClicked: {
-                    list.model.insertRow(workingRow)
-                    list.currentIndex = workingRow
+                    filterTypeBox.currentIndex = 1
+                    list.model.setFilterType(filterTypeBox.currentText)
+                    filterTypeBox.currentIndex = 0
+                    list.model.setFilterType(filterTypeBox.currentText)
+                    baseWorkingRow = 0
+                    if (list.model.insertRow(baseWorkingRow)) {
+                        list.currentIndex = 0
+                        list.model.setValue("born", 0)
+                        list.model.setValue("died", 0)
+                        list.model.setValue("gender", "Unspecified")
+                        personEntry.genderButtonState = "Unspecified"
+                        personEntry.nameTextField.forceActiveFocus()
+                    }
                 }
             }
 
@@ -120,10 +139,10 @@ ApplicationWindow {
                     }
 
                     onHighlightedChanged: {
-                        peoplePage.workingRow = index
+                        peoplePage.baseWorkingRow = index
                         personEntry.nameTextField.text = model.name
                         personEntry.bornSpinBox.value = model.born
-                        // This was easy to make:rR
+                        // This was easy to make:
                         personEntry.diedSpinBox.from = 0
                         personEntry.diedSpinBox.enabled = model.born <= model.died
                         personEntry.diedSpinBox.value = model.died
@@ -138,50 +157,6 @@ ApplicationWindow {
                 }
             }
         }
-        /*
-        PageForm {
-            list.delegate: Item {
-                x: 5
-                width: 80
-                height: 40
-                Row {
-                    id: row1
-                    spacing: 10
-                    Rectangle {
-                        width: 40
-                        height: 40
-                        color: colorCode
-                    }
-
-                    Text {
-                        text: name
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.bold: true
-                    }
-                }
-            }
-            list.model: ListModel {
-                ListElement {
-                    name: "Grey"
-                    colorCode: "grey"
-                }
-
-                ListElement {
-                    name: "Red"
-                    colorCode: "red"
-                }
-
-                ListElement {
-                    name: "Blue"
-                    colorCode: "blue"
-                }
-
-                ListElement {
-                    name: "Green"
-                    colorCode: "green"
-                }
-            }
-        }*/
     }
 
     footer: TabBar {

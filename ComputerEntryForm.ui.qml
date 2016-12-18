@@ -25,7 +25,7 @@ Item {
         anchors.topMargin: 8
     }
 
-    SpinBox {
+    YearSpinBox {
         id: yearSpinBox
         anchors.bottom: parent.top
         anchors.bottomMargin: -94

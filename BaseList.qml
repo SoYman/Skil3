@@ -12,9 +12,9 @@ Item {
     property alias list: list
     property alias addButton: addButton
 
-    property string filter
-    property string filterType
-    property int workingRow: -1
+    property string baseFilter
+    property string baseFilterType
+    property int baseWorkingRow: -1
     property bool newRow: false
 
     TextField {
@@ -36,6 +36,7 @@ Item {
         anchors.leftMargin: -158
         anchors.right: parent.right
         anchors.rightMargin: 8
+        currentIndex: 1
         delegate: ItemDelegate {
             width: filterTypeBox.width
             highlighted: filterTypeBox.highlightedIndex == index
@@ -81,14 +82,6 @@ Item {
             color: addButton.down ? Universal.color(Universal.Green) : Universal.foreground
         }
 
-        onClicked: {
-            if (workingRow < 0) {
-                workingRow = 0
-            }
-            if (list.model.insertRow(workingRow)) {
-                console.log("Row Added!!")
-                list.currentIndex = workingRow
-            }
-        }
+
     }
 }

@@ -25,7 +25,7 @@ void SqlInterfaceModel::setTable(const QString &tableName)
             if (!query.exec(
                         "create table if not exists Computers ("
                         "id INTEGER primary key autoincrement,"
-                        "name TEXT,"
+                        "name TEXT NOT NULL,"
                         "year INTEGER,"
                         "type TEXT,"
                         "made INTEGER)")) {
@@ -37,9 +37,9 @@ void SqlInterfaceModel::setTable(const QString &tableName)
             if (!query.exec(
                         "create table if not exists People ("
                         "id INTEGER primary key autoincrement,"
-                        "name TEXT,"
+                        "name TEXT NOT NULL,"
                         "born INTEGER,"
-                        "died TEXT,"
+                        "died INTEGER,"
                         "gender TEXT,"
                         "nationality TEXT)")) {
                 qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
@@ -50,15 +50,13 @@ void SqlInterfaceModel::setTable(const QString &tableName)
                 !query.exec(
                     "create table if not exists Relations ("
                     "id INTEGER primary key autoincrement"
-                    "computer_id INTEGER"
-                    "person_id INTEGER"
+                    "computer_id INTEGER NOT NULL"
+                    "person_id INTEGER NOT NULL"
                     "relationship TEXT)")) {
             qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
         }
     }
-    if (QSqlDatabase::database().record(tableName).count() == 0) {
         empty = true;
-    }
 
     QSqlTableModel::setTable(tableName);
     setSort(0, _sort_order);
@@ -143,7 +141,6 @@ qint64 SqlInterfaceModel::workingRow() const
 void SqlInterfaceModel::setWorkingRow(qint64 &workingRow)
 {
     _working_row = workingRow;
-    qDebug() << "the working id is " << _working_row << endl;
     emit workingRowChanged();
 }
 
@@ -192,31 +189,38 @@ bool SqlInterfaceModel::insertRow(int row)
 
 }
 
+void SqlInterfaceModel::setIdSort()
+{
+    setSort(0, Qt::DescendingOrder);
+}
+
 void SqlInterfaceModel::setValue(const QString &field, const QVariant &val)
 {
     QSqlRecord sqlRecord = record(_working_row);
     //qDebug() << "data was: " << sqlRecord.value(field) << endl;
     for (int i = 0; i < sqlRecord.count(); i++) {
         //qDebug() << sqlRecord.value(i) << endl;
-        sqlRecord.setGenerated(i, false);
+        //sqlRecord.setGenerated(i, false);
     }
     sqlRecord.setGenerated(field, true);
     sqlRecord.setValue(field, val);
 
 
-    //qDebug() << "data is:  " << sqlRecord.value(field);
-    //qDebug() << "the working row is " << _working_row;
+    qDebug() << "data is:  " << sqlRecord.value(field);
+    qDebug() << "the working row is " << _working_row;
     setRecord(_working_row, sqlRecord);
-    submitAll();
+
+    qDebug() << "it submitted" << submitAll();
 }
 
 bool SqlInterfaceModel::removeWorkingRow()
 {
     bool success = removeRow(_working_row);
+    qDebug() << success;
     //endRemoveRows();
     if (success) {
-        select();
         submitAll();
+        select();
     }
     return success;
 }

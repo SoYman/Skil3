@@ -13,29 +13,32 @@ PersonEntryForm {
     bornSpinBox.onValueChanged: {
         if (bornSpinBox.activeFocus) {
             peoplePage.list.model.setValue("born", bornSpinBox.value)
+            diedSpinBox.from = aliveCheckBox.checkState == 2 ? 0 : bornSpinBox.value
         }
     }
     diedSpinBox.onValueChanged: {
+        console.log("A")
         if (diedSpinBox.activeFocus) {
-        peoplePage.list.model.setValue("died", diedSpinBox.value)
-           }
+            console.log("B")
+            peoplePage.list.model.setValue("died", diedSpinBox.value)
+        }
     }
     aliveCheckBox.onClicked: {
         if (aliveCheckBox.activeFocus) {
-        console.log("Alive changed! ", aliveCheckBox.checkState)
-        if (aliveCheckBox.checkState == 2) {
-            console.log("died now: ", 0)
-            diedSpinBox.from = 0
-            diedSpinBox.value = 0
-            diedSpinBox.enabled = false
-            peoplePage.list.model.setValue("died", 0)
-        } else {
-            console.log("died then: ", diedSpinBox.value)
-            diedSpinBox.enabled = true
-            peoplePage.list.model.setValue("died", diedSpinBox.value)
-            diedSpinBox.from = bornSpinBox.value
-            diedSpinBox.value = 2017
-        }
+            console.log("Alive changed! ", aliveCheckBox.checkState)
+            if (aliveCheckBox.checkState == 2) {
+                console.log("died now: ", 0)
+                diedSpinBox.from = 0
+                diedSpinBox.value = 0
+                diedSpinBox.enabled = false
+                peoplePage.list.model.setValue("died", 0)
+            } else {
+                console.log("died then: ", diedSpinBox.value)
+                diedSpinBox.enabled = true
+                diedSpinBox.from = bornSpinBox.value
+                diedSpinBox.value = 2017
+                peoplePage.list.model.setValue("died", diedSpinBox.value)
+            }
         }
     }
     nationalityTextField.onDisplayTextChanged: {
@@ -44,8 +47,9 @@ PersonEntryForm {
         }
     }
     removeButton.onReleased: {
+        console.log("REMOVE")
         peoplePage.list.model.removeWorkingRow()
-        if (peoplePage.list.count == peoplePage.workingRow) {
+        if (peoplePage.list.count == peoplePage.baseWorkingRow) {
             peoplePage.list.decrementCurrentIndex()
         }
     }
@@ -54,7 +58,6 @@ PersonEntryForm {
     }
     diedSpinBox {
         editable: true
-        // TODO: textFromValue:
     }
 
     genderListView {

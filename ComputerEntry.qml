@@ -15,6 +15,7 @@ ComputerEntryForm {
             computerPage.list.model.setValue("year", yearSpinBox.value)
         }
     }
+
     builtCheckBox.onCheckStateChanged: {
         if (builtCheckBox.activeFocus) {
             computerPage.list.model.setValue("made", builtCheckBox.checkState / 2)
@@ -27,8 +28,9 @@ ComputerEntryForm {
     }
 
     removeButton.onReleased: {
+        console.log("REMOVE")
         computerPage.list.model.removeWorkingRow()
-        if (computerPage.list.count == computerPage.workingRow) {
+        if (computerPage.list.count == computerPage.baseWorkingRow) {
             computerPage.list.decrementCurrentIndex()
         }
     }
@@ -44,6 +46,5 @@ ComputerEntryForm {
         border.width: 5
         radius: 5
         color: removeButton.down ? Universal.color(Universal.Red) : Universal.foreground
-
     }
 }

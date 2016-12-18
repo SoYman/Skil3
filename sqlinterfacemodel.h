@@ -34,6 +34,7 @@ public:
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
     Q_INVOKABLE bool insertRow(int row);
+    Q_INVOKABLE void setIdSort();
     Q_INVOKABLE void setValue(const QString &field, const QVariant &val);
     Q_INVOKABLE bool removeWorkingRow();
 

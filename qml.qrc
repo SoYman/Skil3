@@ -7,5 +7,6 @@
         <file>PersonEntry.qml</file>
         <file>PersonEntryForm.ui.qml</file>
         <file>ListEntryDelegate.qml</file>
+        <file>YearSpinBox.qml</file>
     </qresource>
 </RCC>

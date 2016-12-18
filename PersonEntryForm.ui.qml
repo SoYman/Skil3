@@ -27,7 +27,7 @@ Item {
         anchors.rightMargin: 8
     }
 
-    SpinBox {
+    YearSpinBox {
         id: bornSpinBox
         x: 8
         y: 54
@@ -36,7 +36,7 @@ Item {
         to: 2017
     }
 
-    SpinBox {
+    YearSpinBox {
         id: diedSpinBox
         x: 8
         y: 100
