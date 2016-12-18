@@ -41,6 +41,7 @@ public:
     Q_INVOKABLE void setIdSort();
     Q_INVOKABLE void setValue(const QString &field, const QVariant &val);
     Q_INVOKABLE bool removeWorkingRow();
+    Q_INVOKABLE void makeRelation(const qint64 &computerId, const qint64 &personId);
 
 signals:
     void tableChanged();

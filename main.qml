@@ -70,7 +70,7 @@ ApplicationWindow {
                 ItemDelegate {
                     width: parent.width
                     onClicked: {
-
+                        computerEntry.computerRelationListView.relationList.model.makeRelation(Number(computerView.relationKeyId), Number(model.id))
                     }
                     text: model.name
                 }
