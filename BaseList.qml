@@ -44,12 +44,5 @@ Item {
         anchors.topMargin: 54
         currentIndex: -1
         highlightFollowsCurrentItem: true
-
-        onCurrentIndexChanged: {
-            console.log("currentIndex:", currentIndex)
-        }
-        MouseArea {
-            onClicked: currentIndex = -1
-        }
     }
 }
