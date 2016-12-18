@@ -14,15 +14,6 @@ ApplicationWindow {
     minimumHeight: 666
     title: qsTr("Computers'n'people")
     Universal.theme: Universal.Light
-    onActiveFocusControlChanged: {
-        console.log("\nAFC: ", activeFocusControl)
-
-    }
-    onActiveFocusItemChanged: {
-        console.log("AFI: ", activeFocusItem)
-    }
-
-
 
     SwipeView {
         id: swipeView
@@ -49,11 +40,11 @@ ApplicationWindow {
                     relationList.delegate: computerRelationDelegate
                     relationCandidateList.model: SqlInterfaceModel {
                         table: "People"
-
                     }
                     relationCandidateList.delegate: computerCandidateDelegate
                 }
             }
+
             Component {
                 id: computerRelationDelegate
                 ItemDelegate {
@@ -72,7 +63,7 @@ ApplicationWindow {
                     width: parent.width
                     onClicked: {
                         // Oh boy
-                        computerEntry.computerRelationListView.relationList.model.makeRelation(Number(computerView.relationKeyId), Number(model.id))
+                        computerEntry.computerRelationListView.relationList.model.makeRelation(computerView.relationKeyId, model.id)
                     }
                     text: model.name
                 }
@@ -209,6 +200,7 @@ ApplicationWindow {
                 list.delegate: peopleItemDelegate
 
                 addButton.onClicked: {
+                    computerEntry.computerRelationListView.relationCandidateList.model.select()
                     filterTypeBox.currentIndex = 1
                     list.model.setFilterType(filterTypeBox.currentText)
                     filterTypeBox.currentIndex = 0

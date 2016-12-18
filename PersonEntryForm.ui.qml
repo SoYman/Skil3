@@ -97,9 +97,9 @@ Item {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 54
         anchors.left: parent.left
-        anchors.leftMargin: 0
+        anchors.leftMargin: 8
         anchors.right: parent.right
-        anchors.rightMargin: 0
+        anchors.rightMargin: 8
     }
 
     Button {

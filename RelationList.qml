@@ -14,10 +14,10 @@ Item {
         border.width: 1
 
         Rectangle {
-            id: rectangle1
+            id: yellowRelationHeader
             color: "#00000000"
-            border.width: 4
-            radius: 5
+            border.width: 1
+            radius: 1
             anchors.bottom: parent.top
             anchors.bottomMargin: -56
             anchors.top: parent.top
@@ -27,45 +27,47 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 0
             border.color: Universal.color(Universal.Yellow)
-
-            TextField {
-                id: textField1
-                text: qsTr("Text Field")
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 8
-                anchors.left: parent.left
-                anchors.leftMargin: 123
-                anchors.top: parent.top
-                anchors.topMargin: 8
-                anchors.right: parent.right
-                anchors.rightMargin: 8
-            }
-
-            Text {
-                x: 140
-                y: 16
+            RowLayout {
+                anchors.fill: parent
+                Text {
+                    id: relationsLabel
 
                 text: "Relations"
                 font.pointSize: 13
-                anchors.bottom: parent.top
-                anchors.bottomMargin: -48
-                anchors.top: parent.top
-                anchors.topMargin: 8
-                anchors.right: parent.left
-                anchors.rightMargin: -117
-                anchors.left: parent.left
-                anchors.leftMargin: 8
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.preferredWidth: 166
+                }
+                Rectangle {
+                    id: relationHeaderSpacer
+                    color: "#bdbebf"
+                    Layout.fillHeight: true
+                    Layout.maximumWidth: 1
+                    Layout.minimumWidth: 1
+
+                }
+                Text {
+                    id: candidatesLabel
+
+                text: "Candidates"
+                font.pointSize: 13
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.preferredWidth: 166
+            }
             }
         }
     }
 
     RowLayout {
         anchors.right: parent.right
-        anchors.rightMargin: 0
+        anchors.rightMargin: 8
         anchors.left: parent.left
-        anchors.leftMargin: 0
+        anchors.leftMargin: 8
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
         anchors.top: parent.top
@@ -74,6 +76,7 @@ Item {
 
         ListView {
             id: relationList
+            clip: true
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.minimumWidth: 166
@@ -82,7 +85,8 @@ Item {
         }
 
         Rectangle {
-            color: Universal.foreground
+            id: relationListSpacer
+            color: "#bdbebf"
             Layout.fillHeight: true
             Layout.maximumWidth: 1
             Layout.minimumWidth: 1
@@ -90,6 +94,7 @@ Item {
         }
         ListView {
             id: relationCandidateList
+            clip: true
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.minimumWidth: 166

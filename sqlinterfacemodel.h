@@ -10,7 +10,7 @@ class SqlInterfaceModel : public QSqlRelationalTableModel
     Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
     Q_PROPERTY(QString filterType READ filterType WRITE setFilterType NOTIFY filterTypeChanged)
     Q_PROPERTY(qint64 workingRow READ workingRow WRITE setWorkingRow NOTIFY workingRowChanged)
-    Q_PROPERTY(qint64 relationColumn READ relationColumn WRITE setRelationColumn)
+    Q_PROPERTY(qint64 relationColumn READ relationColumn WRITE setRelationColumn NOTIFY relationColumnChanged)
 
 public:
 
@@ -24,6 +24,7 @@ public:
     void setFilter(const QString &filter) override;
 
     QString filterType() const;
+    // needs to be called explicitly to get correct sorting behaviour
     Q_INVOKABLE void setFilterType(const QString &filterType);
 
     qint64 workingRow() const;
@@ -33,7 +34,6 @@ public:
     void setRelationColumn(qint64 &relationColumn);
 
     QVariant data(const QModelIndex &idx, int role) const Q_DECL_OVERRIDE;
-//    bool setData(const QModelIndex &idx, const QVariant &val, int role) Q_DECL_OVERRIDE;
 
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
@@ -48,6 +48,7 @@ signals:
     void filterChanged();
     void filterTypeChanged();
     void workingRowChanged();
+    void relationColumnChanged();
 
 private:
     enum ComputerRole {
@@ -75,10 +76,7 @@ private:
     QString _filter_type;
     qint64 _working_row;
     qint64 _relation_column;
-    bool _unmodified_entry;
     Qt::SortOrder _sort_order;
-
-    qint64 _filterTypeEnum();
 };
 
 #endif // SQLINTERFACEMODEL_H

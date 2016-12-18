@@ -10,22 +10,22 @@ PersonEntryForm {
             peoplePage.list.model.setValue("name", nameTextField.displayText)
         }
     }
+
     bornSpinBox.onValueChanged: {
         if (bornSpinBox.activeFocus) {
             peoplePage.list.model.setValue("born", bornSpinBox.value)
             diedSpinBox.from = aliveCheckBox.checkState == 2 ? 0 : bornSpinBox.value
         }
     }
+
     diedSpinBox.onValueChanged: {
-        console.log("A")
         if (diedSpinBox.activeFocus) {
-            console.log("B")
             peoplePage.list.model.setValue("died", diedSpinBox.value)
         }
     }
+
     aliveCheckBox.onClicked: {
         if (aliveCheckBox.activeFocus) {
-            console.log("Alive changed! ", aliveCheckBox.checkState)
             if (aliveCheckBox.checkState == 2) {
                 console.log("died now: ", 0)
                 diedSpinBox.from = 0
@@ -41,11 +41,13 @@ PersonEntryForm {
             }
         }
     }
+
     nationalityTextField.onDisplayTextChanged: {
         if (nationalityTextField.activeFocus) {
         peoplePage.list.model.setValue("nationality", nationalityTextField.displayText)
         }
     }
+
     removeButton.onReleased: {
         console.log("REMOVE")
         peoplePage.list.model.removeWorkingRow()
@@ -53,9 +55,11 @@ PersonEntryForm {
             peoplePage.list.decrementCurrentIndex()
         }
     }
+
     bornSpinBox {
         editable: true
     }
+
     diedSpinBox {
         editable: true
     }
@@ -123,8 +127,6 @@ PersonEntryForm {
             }
         }
     }
-
-
 
     removeButton.background: Rectangle {
 

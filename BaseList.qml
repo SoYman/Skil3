@@ -13,9 +13,8 @@ Item {
     property alias addButton: addButton
 
     property string baseFilter
-    property string baseFilterType
+    property string baseFilterType: "Name"
     property int baseWorkingRow: -1
-    property bool newRow: false
 
     TextField {
         id: filterField

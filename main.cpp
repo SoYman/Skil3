@@ -23,7 +23,7 @@ static void connectToDatabase()
     // Ensure that we have a writable location on all devices.
     const QString fileName = writeDir.absolutePath() + "/database.sqlite3";
     qDebug() << fileName;
-    // When using the SQLite driver, open() will create the SQLite database if it doesn't exist.
+
     database.setDatabaseName(fileName);
     if (!database.open()) {
         qFatal("Cannot open database: %s", qPrintable(database.lastError().text()));
@@ -33,7 +33,6 @@ static void connectToDatabase()
 
 int main(int argc, char *argv[])
 {
-    //QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<SqlInterfaceModel>("com.soyman.sqlinterfacemodel", 1, 0, "SqlInterfaceModel");

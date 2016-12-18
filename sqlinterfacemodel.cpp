@@ -100,7 +100,7 @@ void SqlInterfaceModel::setFilter(const QString &filter)
         QSqlRelationalTableModel::setFilter(_filter_type + " = " + _filter);
     } else {
         QString likeCommand;
-        if (_filter_type == "gender") {
+        if (_filter_type == "Gender") {
             likeCommand = " LIKE '";
         } else {
             likeCommand = " LIKE '%";
@@ -113,7 +113,6 @@ void SqlInterfaceModel::setFilter(const QString &filter)
     }
     select();
     emit filterChanged();
-    qDebug() << QSqlRelationalTableModel::filter();
 }
 
 QString SqlInterfaceModel::filterType() const
@@ -141,7 +140,6 @@ void SqlInterfaceModel::setFilterType(const QString &filterType)
     setSort(fieldIndex(_filter_type), _sort_order);
     select();
     emit filterTypeChanged();
-    qDebug() << filter() << " and " << orderByClause();
 }
 
 qint64 SqlInterfaceModel::workingRow() const
@@ -163,32 +161,18 @@ qint64 SqlInterfaceModel::relationColumn() const
 void SqlInterfaceModel::setRelationColumn(qint64 &relationColumn)
 {
     _relation_column = relationColumn;
+
+    emit relationColumnChanged();
 }
 
 QVariant SqlInterfaceModel::data(const QModelIndex &idx, int role) const
 {
-    //qDebug() << QVariant(idx.row()) << "\t" << role - Qt::UserRole;
     if (role < Qt::UserRole) {
         return QSqlRelationalTableModel::data(idx, role);
     }
+    const QSqlRecord sqlRecord = record(idx.row());
 
-    if (_is_relational) {
-        qDebug() << "col: " << _relation_column;
-        qDebug() << "therelation: " << relation(_relation_column).displayColumn();
-        qDebug() << "therelation: " << relation(_relation_column).indexColumn();
-        qDebug() << "therelation: " << relation(_relation_column).tableName();
-        qDebug() << "therelation: " << relation(_relation_column).isValid();
-        const QSqlRecord sqlRecord = record(idx.row());
-    //qDebug() << "data: " << sqlRecord.value(role - Qt::UserRole) << endl;
-
-        return sqlRecord.value(role - Qt::UserRole);
-
-    } else {
-        const QSqlRecord sqlRecord = record(idx.row());
-    //qDebug() << "data: " << sqlRecord.value(role - Qt::UserRole) << endl;
-
-        return sqlRecord.value(role - Qt::UserRole);
-    }
+    return sqlRecord.value(role - Qt::UserRole);
 }
 
 QHash<int, QByteArray> SqlInterfaceModel::roleNames() const
@@ -216,16 +200,14 @@ QHash<int, QByteArray> SqlInterfaceModel::roleNames() const
 
 bool SqlInterfaceModel::insertRow(int row)
 {
+    emit beginInsertRows(index(row, 0), row, row);
     bool success = false;
     // If new entry hasn't been changed, don't add another one
     if (!isDirty()) {
         success = QSqlRelationalTableModel::insertRow(row);
-        qDebug() << "c++ inserted" << success;
-        //_unmodified_entry = success;
-        //submit();
     }
     return success;
-
+    emit endInsertRows();
 }
 
 void SqlInterfaceModel::setIdSort()
@@ -236,30 +218,19 @@ void SqlInterfaceModel::setIdSort()
 void SqlInterfaceModel::setValue(const QString &field, const QVariant &val)
 {
     QSqlRecord sqlRecord = record(_working_row);
-    //qDebug() << "data was: " << sqlRecord.value(field) << endl;
-    for (int i = 0; i < sqlRecord.count(); i++) {
-        //qDebug() << sqlRecord.value(i) << endl;
-        //sqlRecord.setGenerated(i, false);
-    }
     sqlRecord.setGenerated(field, true);
     sqlRecord.setValue(field, val);
 
-
-    qDebug() << "data is:  " << sqlRecord.value(field);
-    qDebug() << "the working row is " << _working_row;
     setRecord(_working_row, sqlRecord);
-
-    qDebug() << "it submitted" << submitAll();
+    //emit dataChanged();
+    submitAll();
 }
 
 bool SqlInterfaceModel::removeWorkingRow()
 {
     bool success = removeRow(_working_row);
-    qDebug() << success;
-    if (success) {
-        submitAll();
-        select();
-    }
+    submitAll();
+    select();
     return success;
 }
 
