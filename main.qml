@@ -32,26 +32,47 @@ ApplicationWindow {
         SplitView {
             id: computerView
             activeFocusOnTab: false
+            property string relationKeyId
 
             ComputerEntry {
                 id: computerEntry
                 Layout.minimumWidth: 333
                 computerRelationListView {
-                    relationList.list.model: SqlInterfaceModel {
+                    relationList.model: SqlInterfaceModel {
                         table: "Relations"
+                        relationColumn: Number(2)
+                        filterType: "computer_id"
+                        filter: computerView.relationKeyId
                     }
-                    relationList.list.delegate: computerRelationDelegate
+                    relationList.delegate: computerRelationDelegate
+                    relationCandidateList.model: SqlInterfaceModel {
+                        table: "People"
+
+                    }
+                    relationCandidateList.delegate: computerCandidateDelegate
                 }
             }
             Component {
                 id: computerRelationDelegate
-                ListEntryDelegate {
+                ItemDelegate {
+                    width: parent.width
                     onClicked: {
-                        computerEntry.computerRelationListView.relationList.list.currentIndex = index
+
                     }
-                    contentItem: Text {
-                        text: model.computer_id
+                    //contentItem: Text {
+                        text: model.person_id
+                    //}
+                }
+            }
+
+            Component {
+                id: computerCandidateDelegate
+                ItemDelegate {
+                    width: parent.width
+                    onClicked: {
+
                     }
+                    text: model.name
                 }
             }
 
@@ -69,6 +90,7 @@ ApplicationWindow {
                 }
 
                 list.model: SqlInterfaceModel {
+                    id:computerPageModel
                     table: "Computers"
                     filter: computerPage.baseFilter
                     filterType: computerPage.baseFilterType
@@ -96,11 +118,13 @@ ApplicationWindow {
                 ListEntryDelegate {
                     onClicked: {
                         computerPage.list.currentIndex = index
+                        //computerView.
                     }
 
 
                     onHighlightedChanged: {
                         computerPage.baseWorkingRow = index
+                        computerView.relationKeyId = String(model.id)
                         computerEntry.nameTextField.text = model.name
                         computerEntry.yearSpinBox.value = model.year
                         computerEntry.builtCheckBox.checkState = model.made * 2
@@ -114,13 +138,39 @@ ApplicationWindow {
         }
 
         SplitView {
+            id: personView
+            activeFocusOnTab: false
+            property int personRelationColumn: 1
+            property string relationKeyId
+
             PersonEntry {
                 id: personEntry
                 Layout.minimumWidth: 333
                 personRelationListView {
+                    relationList.model: SqlInterfaceModel {
+                        table: "Relations"
+                        relationColumn: Number(1)
+                        filterType: "person_id"
+                        filter: personView.relationKeyId
+                    }
+                    relationList.delegate: personRelationDelegate
+                    relationCandidateList.model: SqlInterfaceModel {
+
+                    }
                 }
             }
+            Component {
+                id: personRelationDelegate
+                ItemDelegate {
+                    width: parent.width
+                    onClicked: {
 
+                    }
+                    //contentItem: Text {
+                        text: model.computer_id
+                    //}
+                }
+            }
             BaseList {
                 id: peoplePage
                 Layout.minimumWidth: 333
@@ -168,6 +218,7 @@ ApplicationWindow {
 
                     onHighlightedChanged: {
                         peoplePage.baseWorkingRow = index
+                        personView.relationKeyId = String(model.id)
                         personEntry.nameTextField.text = model.name
                         personEntry.bornSpinBox.value = model.born
                         // This was easy to make:

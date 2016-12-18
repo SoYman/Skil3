@@ -10,7 +10,7 @@ class SqlInterfaceModel : public QSqlRelationalTableModel
     Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
     Q_PROPERTY(QString filterType READ filterType WRITE setFilterType NOTIFY filterTypeChanged)
     Q_PROPERTY(qint64 workingRow READ workingRow WRITE setWorkingRow NOTIFY workingRowChanged)
-    //Q_PROPERTY(type name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(qint64 relationColumn READ relationColumn WRITE setRelationColumn)
 
 public:
 
@@ -29,6 +29,9 @@ public:
     qint64 workingRow() const;
     void setWorkingRow(qint64 &workingId);
 
+    qint64 relationColumn() const;
+    void setRelationColumn(qint64 &relationColumn);
+
     QVariant data(const QModelIndex &idx, int role) const Q_DECL_OVERRIDE;
 //    bool setData(const QModelIndex &idx, const QVariant &val, int role) Q_DECL_OVERRIDE;
 
@@ -46,10 +49,31 @@ signals:
     void workingRowChanged();
 
 private:
+    enum ComputerRole {
+        id = Qt::UserRole,
+        name,
+        year,
+        type,
+        made
+    };
+    enum PeopleRole {
+        born = Qt::UserRole + 2,
+        died,
+        gender,
+        nationality
+    };
+    enum RelationRole {
+        computer_id = Qt::UserRole + 1,
+        person_id,
+        relationship
+    };
+
     QString _table;
+    bool _is_relational;
     QString _filter;
     QString _filter_type;
     qint64 _working_row;
+    qint64 _relation_column;
     bool _unmodified_entry;
     Qt::SortOrder _sort_order;
 

@@ -32,6 +32,7 @@ void SqlInterfaceModel::setTable(const QString &tableName)
                 qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
             }
         }
+        _is_relational = false;
     } else if (tableName == "People") {
         if (!QSqlDatabase::database().tables().contains(tableName)) {
             if (!query.exec(
@@ -45,6 +46,7 @@ void SqlInterfaceModel::setTable(const QString &tableName)
                 qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
             }
         }
+        _is_relational = false;
     } else if (tableName == "Relations") {
         if (!QSqlDatabase::database().tables().contains(tableName) &&
                 !query.exec(
@@ -55,14 +57,18 @@ void SqlInterfaceModel::setTable(const QString &tableName)
                     "relationship TEXT)")) {
             qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
         }
-        setRelation(1, QSqlRelation("Computers", "id", "name"));
-        setRelation(2, QSqlRelation("People", "id", "name"));
+        _is_relational = true;
     }
     empty = true;
 
     QSqlRelationalTableModel::setTable(tableName);
     setSort(0, _sort_order);
     setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
+    if (_is_relational) {
+
+        setRelation(1, QSqlRelation("Computers", "id", "name"));
+        setRelation(2, QSqlRelation("People", "id", "name"));
+    }
     if (empty) {
         QSqlRecord rec = record();
         if (tableName == "Computers") {
@@ -90,21 +96,24 @@ QString SqlInterfaceModel::filter() const
 void SqlInterfaceModel::setFilter(const QString &filter)
 {
     _filter = filter;
-    QString likeCommand;
-    if (_filter_type == "gender") {
-        likeCommand = " LIKE '";
+    if (_is_relational) {
+        QSqlRelationalTableModel::setFilter(_filter_type + " = " + _filter);
     } else {
-        likeCommand = " LIKE '%";
+        QString likeCommand;
+        if (_filter_type == "gender") {
+            likeCommand = " LIKE '";
+        } else {
+            likeCommand = " LIKE '%";
+        }
+        if (_filter == "") {
+            QSqlRelationalTableModel::setFilter("");
+        } else {
+            QSqlRelationalTableModel::setFilter(_filter_type + likeCommand + _filter + "%'");
+        }
     }
-    if (_filter == "") {
-        QSqlRelationalTableModel::setFilter("");
-    } else {
-        QSqlRelationalTableModel::setFilter(_filter_type + likeCommand + _filter + "%'");
-    }
-
     select();
     emit filterChanged();
-    //qDebug() << QSqlRelationalTableModel::filter();
+    qDebug() << QSqlRelationalTableModel::filter();
 }
 
 QString SqlInterfaceModel::filterType() const
@@ -132,7 +141,7 @@ void SqlInterfaceModel::setFilterType(const QString &filterType)
     setSort(fieldIndex(_filter_type), _sort_order);
     select();
     emit filterTypeChanged();
-    qDebug() << filterType << " and " << orderByClause();
+    qDebug() << filter() << " and " << orderByClause();
 }
 
 qint64 SqlInterfaceModel::workingRow() const
@@ -146,6 +155,16 @@ void SqlInterfaceModel::setWorkingRow(qint64 &workingRow)
     emit workingRowChanged();
 }
 
+qint64 SqlInterfaceModel::relationColumn() const
+{
+    return _relation_column;
+}
+
+void SqlInterfaceModel::setRelationColumn(qint64 &relationColumn)
+{
+    _relation_column = relationColumn;
+}
+
 QVariant SqlInterfaceModel::data(const QModelIndex &idx, int role) const
 {
     //qDebug() << QVariant(idx.row()) << "\t" << role - Qt::UserRole;
@@ -153,31 +172,44 @@ QVariant SqlInterfaceModel::data(const QModelIndex &idx, int role) const
         return QSqlRelationalTableModel::data(idx, role);
     }
 
-    const QSqlRecord sqlRecord = record(idx.row());
+    if (_is_relational) {
+        qDebug() << "col: " << _relation_column;
+        qDebug() << "therelation: " << relation(_relation_column).displayColumn();
+        qDebug() << "therelation: " << relation(_relation_column).indexColumn();
+        qDebug() << "therelation: " << relation(_relation_column).tableName();
+        qDebug() << "therelation: " << relation(_relation_column).isValid();
+        const QSqlRecord sqlRecord = record(idx.row());
     //qDebug() << "data: " << sqlRecord.value(role - Qt::UserRole) << endl;
 
-    return sqlRecord.value(role - Qt::UserRole);
+        return sqlRecord.value(role - Qt::UserRole);
+
+    } else {
+        const QSqlRecord sqlRecord = record(idx.row());
+    //qDebug() << "data: " << sqlRecord.value(role - Qt::UserRole) << endl;
+
+        return sqlRecord.value(role - Qt::UserRole);
+    }
 }
 
 QHash<int, QByteArray> SqlInterfaceModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
-    roles[Qt::UserRole] = "id";
+    roles[id] = "id";
     if (_table == "Computers") {
-        roles[Qt::UserRole + 1] = "name";
-        roles[Qt::UserRole + 2] = "year";
-        roles[Qt::UserRole + 3] = "type";
-        roles[Qt::UserRole + 4] = "made";
+        roles[name] = "name";
+        roles[year] = "year";
+        roles[type] = "type";
+        roles[made] = "made";
     } else if (_table == "People") {
-        roles[Qt::UserRole + 1] = "name";
-        roles[Qt::UserRole + 2] = "born";
-        roles[Qt::UserRole + 3] = "died";
-        roles[Qt::UserRole + 4] = "gender";
-        roles[Qt::UserRole + 5] = "nationality";
+        roles[name] = "name";
+        roles[born] = "born";
+        roles[died] = "died";
+        roles[gender] = "gender";
+        roles[nationality] = "nationality";
     } else if (_table == "Relations") {
-        roles[Qt::UserRole + 1] = "computer_id";
-        roles[Qt::UserRole + 2] = "person_id";
-        roles[Qt::UserRole + 3] = "relationship";
+        roles[computer_id] = "computer_id";
+        roles[person_id] = "person_id";
+        roles[relationship] = "relationship";
     }
     return roles;
 }

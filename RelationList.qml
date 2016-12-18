@@ -1,11 +1,13 @@
 import QtQuick 2.0
-import QtQuick.Controls.Universal 2.0
 import QtQuick.Controls 2.0
+import QtQuick.Controls.Universal 2.0
+import QtQuick.Layouts 1.1
 
 Item {
     id: relationListView
 
     property alias relationList: relationList
+    property alias relationCandidateList: relationCandidateList
     Rectangle {
         anchors.fill: parent
         border.color: Universal.color(Universal.Yellow)
@@ -59,8 +61,7 @@ Item {
         }
     }
 
-    BaseList {
-        id: relationList
+    RowLayout {
         anchors.right: parent.right
         anchors.rightMargin: 0
         anchors.left: parent.left
@@ -69,6 +70,30 @@ Item {
         anchors.bottomMargin: 0
         anchors.top: parent.top
         anchors.topMargin: 55
-        list.model: "Relations"
+        spacing: 0
+
+        ListView {
+            id: relationList
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.minimumWidth: 166
+            Layout.preferredWidth: 166
+            interactive: true
+        }
+
+        Rectangle {
+            color: Universal.foreground
+            Layout.fillHeight: true
+            Layout.maximumWidth: 1
+            Layout.minimumWidth: 1
+
+        }
+        ListView {
+            id: relationCandidateList
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.minimumWidth: 166
+            Layout.preferredWidth: 166
+        }
     }
 }
