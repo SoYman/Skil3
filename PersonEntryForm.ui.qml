@@ -11,7 +11,7 @@ Item {
     property alias aliveCheckBox: aliveCheckBox
     property alias genderListView: genderListView
     property alias nationalityTextField: nationalityTextField
-    property alias listView1: listView1
+    property alias relationListView: relationListView
     property alias removeButton: removeButton
 
     TextField {
@@ -74,15 +74,19 @@ Item {
 
     ListView {
         id: genderListView
-        x: 262
-        y: 54
-        width: 130
-        height: 132
+        anchors.top: parent.top
+        anchors.topMargin: 54
+        anchors.bottom: parent.top
+        anchors.bottomMargin: -186
+        anchors.left: parent.right
+        anchors.leftMargin: -138
+        anchors.right: parent.right
+        anchors.rightMargin: 8
         interactive: false
     }
 
     ListView {
-        id: listView1
+        id: relationListView
         clip: true
         anchors.top: parent.top
         anchors.topMargin: 238
@@ -150,14 +154,14 @@ Item {
 
 
     Label {
-        id: label1
+        id: bornLabel
         x: 154
         y: 66
         text: qsTr("Born")
     }
 
     Label {
-        id: label2
+        id: diedLabel
         x: 154
         y: 112
         text: qsTr("Died")

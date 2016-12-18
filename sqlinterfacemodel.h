@@ -46,6 +46,7 @@ private:
     QString _filter;
     QString _filter_type;
     qint64 _working_row;
+    bool _descending;
 
     qint64 _filterTypeEnum();
 };

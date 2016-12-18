@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.0
 
 Item {
     id: baseList
+    Layout.fillWidth: true
     property alias filterField: filterField
     property alias filterTypeBox: filterTypeBox
     property alias list: list
@@ -41,8 +42,14 @@ Item {
         anchors.bottomMargin: 8
         anchors.top: parent.top
         anchors.topMargin: 54
+        currentIndex: -1
+        highlightFollowsCurrentItem: true
+
         onCurrentIndexChanged: {
             console.log("currentIndex:", currentIndex)
+        }
+        MouseArea {
+            onClicked: currentIndex = -1
         }
     }
 }

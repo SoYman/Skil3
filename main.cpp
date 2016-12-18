@@ -5,7 +5,6 @@
 #include <QSqlError>
 #include <QtQml>
 
-#include "sqlcomputermodel.h"
 #include "sqlinterfacemodel.h"
 
 static void connectToDatabase()
@@ -37,7 +36,6 @@ int main(int argc, char *argv[])
     //QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
-    qmlRegisterType<SqlComputerModel>("com.soyman.sqlcomputermodel", 1, 0, "SqlComputerModel");
     qmlRegisterType<SqlInterfaceModel>("com.soyman.sqlinterfacemodel", 1, 0, "SqlInterfaceModel");
 
     connectToDatabase();

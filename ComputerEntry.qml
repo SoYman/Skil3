@@ -3,11 +3,26 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Universal 2.0
 
 ComputerEntryForm {
-    typeTextField.onAccepted: {
-}
-    relationListView.onActiveFocusChanged: {
+
+    nameTextField.onDisplayTextChanged: {
+        computerPage.list.model.setValue("name", nameTextField.displayText)
     }
-    builtCheckBox.onCanceled: {
+    yearSpinBox.onValueChanged: {
+        computerPage.list.model.setValue("year", yearSpinBox.value)
+    }
+    builtCheckBox.onCheckStateChanged: {
+        computerPage.list.model.setValue("made", builtCheckBox.checkState / 2)
+    }
+    typeTextField.onDisplayTextChanged: {
+        computerPage.list.model.setValue("type", typeTextField.displayText)
+
+    }
+
+    removeButton.onReleased: {
+    }
+    typeTextField.onAccepted: {
+    }
+    relationListView.onActiveFocusChanged: {
     }
     yearSpinBox {
         editable: true

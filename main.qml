@@ -3,7 +3,6 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Universal 2.0
 import QtQuick.Layouts 1.0
-import com.soyman.sqlcomputermodel 1.0
 import com.soyman.sqlinterfacemodel 1.0
 
 ApplicationWindow {
@@ -29,28 +28,12 @@ ApplicationWindow {
 
             ComputerEntry {
                 id: computerEntry
-                nameTextField.onDisplayTextChanged: {
-                    computerPage.list.model.setValue("name", nameTextField.displayText)
-                }
-                yearSpinBox.onValueChanged: {
-                    computerPage.list.model.setValue("year", yearSpinBox.value)
-                }
-                builtCheckBox.onCheckStateChanged: {
-                    computerPage.list.model.setValue("made", builtCheckBox.checkState / 2)
-                }
-                typeTextField.onDisplayTextChanged: {
-                    computerPage.list.model.setValue("type", typeTextField.displayText)
-
-                }
-
-                removeButton.onReleased: {
-                }
                 Layout.minimumWidth: 333
             }
 
             BaseList {
                 id: computerPage
-                Layout.fillWidth: true
+                Layout.minimumWidth: 333
                 property string computerFilter
                 property string computerFilterType
 
@@ -61,52 +44,59 @@ ApplicationWindow {
                     }
                 }
 
-                filterField.onAccepted: {
+                filterField.onDisplayTextChanged: {
                     computerPage.computerFilter = filterField.displayText
                 }
 
-                list {
-                    model: SqlInterfaceModel {
-                        table: "Computers"
-                        filter: computerPage.computerFilter
-                        filterType: computerPage.computerFilterType
-                        workingRow: computerView.computerWorkingRow
+                list.model: SqlInterfaceModel {
+                    table: "Computers"
+                    filter: computerPage.computerFilter
+                    filterType: computerPage.computerFilterType
+                    workingRow: computerView.computerWorkingRow
+                }
+
+                list.delegate: computerItemDelegate
+
+                //baseItemDelegate {
+                    // Display computer in sidebar
+//                    onClicked: {
+//                        computerView.computerWorkingRow = model.row
+//                        computerEntry.nameTextField.text = model.name
+//                        computerEntry.yearSpinBox.value = model.year
+//                        computerEntry.builtCheckBox.checkState = model.made * 2
+//                        computerEntry.typeTextField.text = model.type
+//                    }
+                //}
+            }
+
+            Component {
+                id: computerItemDelegate
+                ListEntryDelegate {
+                    onClicked: {
+                        computerPage.list.currentIndex = index
+                        console.log("Index: ", index)
+                        computerView.computerWorkingRow = index
+                        computerEntry.nameTextField.text = model.name
+                        computerEntry.yearSpinBox.value = model.year
+                        computerEntry.builtCheckBox.checkState = model.made * 2
+                        computerEntry.typeTextField.text = model.type
                     }
-
-                    delegate: ItemDelegate {
-                        width: parent.width
-
+                    contentItem: Text {
                         text: model.name
-                        // Display computer in sidebar
-                        onClicked: {
-                            computerView.computerWorkingRow = model.row
-                            computerEntry.nameTextField.text = model.name
-                            computerEntry.yearSpinBox.value = model.year
-                            computerEntry.builtCheckBox.checkState = model.made*2
-                            computerEntry.typeTextField.text = model.type
-                        }
                     }
                 }
             }
         }
 
         SplitView {
-
             PersonEntry {
                 id: personEntry
-                nameTextField.onDisplayTextChanged: {
-                    peoplePage.list.model.setValue("name", nameTextField.displayText)
-                }
-
-
-                removeButton.onReleased: {
-                }
                 Layout.minimumWidth: 333
             }
 
             BaseList {
                 id: peoplePage
-                Layout.fillWidth: true
+                Layout.minimumWidth: 333
                 property string peopleFilter
                 property string peopleFilterType
                 property int peopleWorkingRow: -1
@@ -118,41 +108,42 @@ ApplicationWindow {
                     }
                 }
 
-                filterField.onAccepted: {
+                filterField.onDisplayTextChanged: {
                     peopleFilter = filterField.displayText
                 }
 
-                list {
-                    model: SqlInterfaceModel {
-                        table: "People"
-                        filter: peoplePage.peopleFilter
-                        filterType: peoplePage.peopleFilterType
-                        workingRow: peoplePage.peopleWorkingRow
+                list.model: SqlInterfaceModel {
+                    table: "People"
+                    filter: peoplePage.peopleFilter
+                    filterType: peoplePage.peopleFilterType
+                    workingRow: peoplePage.peopleWorkingRow
+                }
 
+                list.delegate: peopleItemDelegate
+            }
+
+            Component {
+                id: peopleItemDelegate
+                ListEntryDelegate {
+                    onClicked: {
+                        computerPage.list.currentIndex = index
+                        console.log("index: ", index)
+                        peoplePage.peopleWorkingRow = index
+                        personEntry.nameTextField.text = model.name
+                        personEntry.bornSpinBox.value = model.born
+                        personEntry.diedSpinBox.from = model.born
+                        personEntry.diedSpinBox.value = model.died
+                        personEntry.aliveCheckBox.checkState = Number(model.died < model.born) * 2
+                        personEntry.genderButtonState = model.gender
+                        personEntry.nationalityTextField.text = model.nationality
                     }
-
-                    delegate: ItemDelegate {
-                        width: parent.width
-
+                    contentItem: Text {
                         text: model.name
-                        // Display person in sidebar
-                        onClicked: {
-                            console.log(model.row)
-                            peoplePage.peopleWorkingRow = model.row
-                            personEntry.nameTextField.text = model.name
-                            personEntry.bornSpinBox.value = model.born
-                            personEntry.diedSpinBox.from = model.died >= model.born ? model.born : 0
-                            personEntry.diedSpinBox.value = model.died
-                            personEntry.diedSpinBox.enabled = model.died >= model.born
-                            personEntry.aliveCheckBox.checkState = Number(model.died < model.born) * 2
-                            personEntry.genderButtonState = model.gender
-                            personEntry.nationalityTextField.text = model.nationality
-                        }
                     }
                 }
             }
         }
-/*
+        /*
         PageForm {
             list.delegate: Item {
                 x: 5
@@ -207,8 +198,8 @@ ApplicationWindow {
         TabButton {
             text: qsTr("People")
         }
-        TabButton {
-            text: qsTr("Relations")
-        }
+//        TabButton {
+//            text: qsTr("Relations")
+//        }
     }
 }
