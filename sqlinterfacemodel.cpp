@@ -50,11 +50,12 @@ void SqlInterfaceModel::setTable(const QString &tableName)
     } else if (tableName == "Relations") {
         if (!QSqlDatabase::database().tables().contains(tableName) &&
                 !query.exec(
-                    "create table if not exists Relations ("
-                    "id INTEGER primary key autoincrement,"
+                    "CREATE TABLE IF NOT EXISTS Relations ("
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                     "computer_id INTEGER NOT NULL,"
                     "person_id INTEGER NOT NULL,"
-                    "relationship TEXT)")) {
+                    "relationship TEXT,"
+                    "UNIQUE (computer_id, person_id))R")) {
             qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
         }
         _is_relational = true;
@@ -213,6 +214,7 @@ bool SqlInterfaceModel::insertRow(int row)
 void SqlInterfaceModel::setIdSort()
 {
     setSort(0, Qt::DescendingOrder);
+    select();
 }
 
 void SqlInterfaceModel::setValue(const QString &field, const QVariant &val)
@@ -239,11 +241,14 @@ void SqlInterfaceModel::makeRelation(const qint64 &computerId, const qint64 &per
     if (_is_relational) {
         QSqlRecord sqlRecord = record(0);
         sqlRecord.setGenerated("id", false);
+        qDebug() << sqlRecord.fieldName(0) << sqlRecord.fieldName(1) << sqlRecord.fieldName(2);
         sqlRecord.setValue(1, QVariant(computerId));
         sqlRecord.setValue(2, QVariant(personId));
+        qDebug() <<
         insertRecord(-1, sqlRecord);
+        qDebug() <<
         submitAll();
-        sort(1, _sort_order);
+        sort(0, _sort_order);
         select();
     }
 }

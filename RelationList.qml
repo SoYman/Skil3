@@ -82,6 +82,7 @@ Item {
             Layout.minimumWidth: 166
             Layout.preferredWidth: 166
             interactive: true
+
         }
 
         Rectangle {

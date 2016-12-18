@@ -19,6 +19,13 @@ ApplicationWindow {
         id: swipeView
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
+        onCurrentIndexChanged: {
+            console.log("index diff ", currentIndex)
+            computerEntry.computerRelationListView.relationCandidateList.model.setIdSort()
+            computerEntry.computerRelationListView.relationList.model.setIdSort()
+            personEntry.personRelationListView.relationCandidateList.model.setIdSort()
+            personEntry.personRelationListView.relationList.model.setIdSort()
+        }
 
         SplitView {
             id: computerView
@@ -40,6 +47,8 @@ ApplicationWindow {
                     relationList.delegate: computerRelationDelegate
                     relationCandidateList.model: SqlInterfaceModel {
                         table: "People"
+                        filter: ""
+                        filterType: "Name"
                     }
                     relationCandidateList.delegate: computerCandidateDelegate
                 }
@@ -173,6 +182,7 @@ ApplicationWindow {
                     width: parent.width
                     text: model.name
                     onClicked: {
+                        console.log(model.id, personView.relationKeyId)
                         personEntry.personRelationListView.relationList.model.makeRelation(model.id, personView.relationKeyId)
                     }
                 }
