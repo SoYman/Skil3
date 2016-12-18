@@ -62,10 +62,11 @@ PersonEntryForm {
 
     genderListView {
         model: [ "Unspecified", "Female", "Male" ]
-
+        //highlightFollowsCurrentItem: true
         delegate: RadioDelegate {
             id: genderRadioDelegate
             checked: modelData == genderButtonState
+            activeFocusOnTab: true
 
             // This refused to work outside of the RadioDelegate scope
             onClicked: {
@@ -73,22 +74,36 @@ PersonEntryForm {
                 peoplePage.list.model.setValue("gender", genderButtonState)
             }
 
+            onActiveFocusChanged: {
+                highlighted = activeFocus
+            }
+
             contentItem: Text {
                 leftPadding: genderRadioDelegate.indicator.width + genderRadioDelegate.spacing
                 text: modelData
+                color: Universal.background
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
             }
 
-            indicator: Rectangle {
+            indicator: Item {
                 implicitWidth: 20
                 implicitHeight: 20
                 x: parent.height / 2 - height / 2
                 y: parent.height / 2 - height / 2
-                radius: 10
-                color: "transparent"
-                border.color: Universal.background
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 10
+                    color: Universal.color(Universal.Indigo)
+                    opacity: genderRadioDelegate.highlighted ? 0.15 : 0
+                }
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 10
+                    color: "transparent"
+                    border.color: genderRadioDelegate.highlighted ? Universal.color(Universal.Indigo) : Universal.background
+                }
                 Rectangle {
                     width: 10
                     height: 10
@@ -98,6 +113,13 @@ PersonEntryForm {
                     color: Universal.background
                     visible: genderRadioDelegate.checked
                 }
+            }
+
+            background: Rectangle {
+                implicitWidth: 130
+                implicitHeight: 44
+                visible: genderRadioDelegate.down
+                color: "#bdbebf"
             }
         }
     }

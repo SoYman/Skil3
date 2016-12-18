@@ -60,18 +60,6 @@ Item {
         anchors.topMargin: 146
     }
 
-    TextField {
-        id: nationalityTextField
-        placeholderText: qsTr("Nationality")
-        anchors.top: parent.top
-        anchors.topMargin: 192
-        anchors.bottom: parent.top
-        anchors.bottomMargin: -232
-        anchors.left: parent.left
-        anchors.leftMargin: 8
-        anchors.right: parent.right
-        anchors.rightMargin: 8
-    }
 
     ListView {
         id: genderListView
@@ -84,6 +72,19 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 8
         interactive: false
+    }
+
+    TextField {
+        id: nationalityTextField
+        placeholderText: qsTr("Nationality")
+        anchors.top: parent.top
+        anchors.topMargin: 192
+        anchors.bottom: parent.top
+        anchors.bottomMargin: -232
+        anchors.left: parent.left
+        anchors.leftMargin: 8
+        anchors.right: parent.right
+        anchors.rightMargin: 8
     }
 
     ListView {
