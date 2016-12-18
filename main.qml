@@ -13,7 +13,14 @@ ApplicationWindow {
     height: 900
     minimumHeight: 666
     title: qsTr("Computers'n'people")
-    Universal.theme: Universal.Dark
+    Universal.theme: Universal.Light
+    onActiveFocusControlChanged: {
+        console.log("\nAFC: ", activeFocusControl)
+
+    }
+    onActiveFocusItemChanged: {
+        console.log("AFI: ", activeFocusItem)
+    }
 
 
 
@@ -24,15 +31,34 @@ ApplicationWindow {
 
         SplitView {
             id: computerView
+            activeFocusOnTab: false
 
             ComputerEntry {
                 id: computerEntry
                 Layout.minimumWidth: 333
+                computerRelationListView {
+                    relationList.list.model: SqlInterfaceModel {
+                        table: "Relations"
+                    }
+                    relationList.list.delegate: computerRelationDelegate
+                }
+            }
+            Component {
+                id: computerRelationDelegate
+                ListEntryDelegate {
+                    onClicked: {
+                        computerEntry.computerRelationListView.relationList.list.currentIndex = index
+                    }
+                    contentItem: Text {
+                        text: model.computer_id
+                    }
+                }
             }
 
             BaseList {
                 id: computerPage
                 Layout.minimumWidth: 333
+                activeFocusOnTab: true
 
                 filterTypeBox {
                     model: ["ID", "Name", "Year", "Type", "Made"]
@@ -91,6 +117,8 @@ ApplicationWindow {
             PersonEntry {
                 id: personEntry
                 Layout.minimumWidth: 333
+                personRelationListView {
+                }
             }
 
             BaseList {
@@ -161,6 +189,7 @@ ApplicationWindow {
 
     footer: TabBar {
         id: tabBar
+        topPadding: 1
         currentIndex: swipeView.currentIndex
         TabButton {
             text: qsTr("Computers")

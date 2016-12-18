@@ -1,15 +1,16 @@
 #ifndef SQLINTERFACEMODEL_H
 #define SQLINTERFACEMODEL_H
 
-#include <QSqlTableModel>
+#include <QSqlRelationalTableModel>
 
-class SqlInterfaceModel : public QSqlTableModel
+class SqlInterfaceModel : public QSqlRelationalTableModel
 {
     Q_OBJECT
     Q_PROPERTY(QString table READ table WRITE setTable NOTIFY tableChanged)
     Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
     Q_PROPERTY(QString filterType READ filterType WRITE setFilterType NOTIFY filterTypeChanged)
     Q_PROPERTY(qint64 workingRow READ workingRow WRITE setWorkingRow NOTIFY workingRowChanged)
+    //Q_PROPERTY(type name READ name WRITE setName NOTIFY nameChanged)
 
 public:
 

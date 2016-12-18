@@ -3,6 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Universal 2.0
 
 ComputerEntryForm {
+    Universal.theme: Universal.Light
 
     nameTextField.onDisplayTextChanged: {
         if (nameTextField.activeFocus) {
@@ -35,16 +36,15 @@ ComputerEntryForm {
         }
     }
 
-    relationListView.onActiveFocusChanged: {
-    }
     yearSpinBox {
         editable: true
     }
 
     removeButton.background: Rectangle {
         border.color: Universal.color(Universal.Red)
-        border.width: 5
-        radius: 5
-        color: removeButton.down ? Universal.color(Universal.Red) : Universal.foreground
+        border.width: 4
+        radius: 4
+        // This really wants to swap the BG with the FG
+        color: removeButton.down ? Universal.color(Universal.Red) : Universal.background
     }
 }

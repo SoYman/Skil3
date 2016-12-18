@@ -6,10 +6,10 @@ Item {
     width: 400
     height: 400
     property alias typeTextField: typeTextField
-    property alias relationListView: relationListView
     property alias builtCheckBox: builtCheckBox
     property alias yearSpinBox: yearSpinBox
     property alias nameTextField: nameTextField
+    property alias computerRelationListView: computerRelationListView
     property alias removeButton: removeButton
 
     TextField {
@@ -81,9 +81,21 @@ Item {
         anchors.leftMargin: 8
     }
 
-    ListView {
-        id: relationListView
-        clip: true
+//    BaseList {
+//        id: relationListView
+//        clip: true
+//        anchors.top: parent.top
+//        anchors.topMargin: 146
+//        anchors.bottom: parent.bottom
+//        anchors.bottomMargin: 54
+//        anchors.left: parent.left
+//        anchors.leftMargin: 8
+//        anchors.right: parent.right
+//        anchors.rightMargin: 8
+//    }
+
+    RelationList {
+        id: computerRelationListView
         anchors.top: parent.top
         anchors.topMargin: 146
         anchors.bottom: parent.bottom
@@ -92,47 +104,6 @@ Item {
         anchors.leftMargin: 8
         anchors.right: parent.right
         anchors.rightMargin: 8
-        delegate: Item {
-            x: 5
-            width: 80
-            height: 40
-            Row {
-                id: row1
-                spacing: 10
-                Rectangle {
-                    width: 40
-                    height: 40
-                    color: colorCode
-                }
-
-                Text {
-                    text: name
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.bold: true
-                }
-            }
-        }
-        model: ListModel {
-            ListElement {
-                name: "Grey"
-                colorCode: "grey"
-            }
-
-            ListElement {
-                name: "Red"
-                colorCode: "red"
-            }
-
-            ListElement {
-                name: "Blue"
-                colorCode: "blue"
-            }
-
-            ListElement {
-                name: "Green"
-                colorCode: "green"
-            }
-        }
     }
 
     Button {

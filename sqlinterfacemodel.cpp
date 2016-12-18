@@ -6,7 +6,7 @@
 #include <QSqlQuery>
 #include <QSqlField>
 
-SqlInterfaceModel::SqlInterfaceModel(QObject *parent) : QSqlTableModel(parent) {
+SqlInterfaceModel::SqlInterfaceModel(QObject *parent) : QSqlRelationalTableModel(parent) {
     _sort_order = Qt::DescendingOrder;
 }
 
@@ -49,18 +49,20 @@ void SqlInterfaceModel::setTable(const QString &tableName)
         if (!QSqlDatabase::database().tables().contains(tableName) &&
                 !query.exec(
                     "create table if not exists Relations ("
-                    "id INTEGER primary key autoincrement"
-                    "computer_id INTEGER NOT NULL"
-                    "person_id INTEGER NOT NULL"
+                    "id INTEGER primary key autoincrement,"
+                    "computer_id INTEGER NOT NULL,"
+                    "person_id INTEGER NOT NULL,"
                     "relationship TEXT)")) {
             qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
         }
+        setRelation(1, QSqlRelation("Computers", "id", "name"));
+        setRelation(2, QSqlRelation("People", "id", "name"));
     }
-        empty = true;
+    empty = true;
 
-    QSqlTableModel::setTable(tableName);
+    QSqlRelationalTableModel::setTable(tableName);
     setSort(0, _sort_order);
-    setEditStrategy(QSqlTableModel::OnManualSubmit);
+    setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
     if (empty) {
         QSqlRecord rec = record();
         if (tableName == "Computers") {
@@ -95,14 +97,14 @@ void SqlInterfaceModel::setFilter(const QString &filter)
         likeCommand = " LIKE '%";
     }
     if (_filter == "") {
-        QSqlTableModel::setFilter("");
+        QSqlRelationalTableModel::setFilter("");
     } else {
-        QSqlTableModel::setFilter(_filter_type + likeCommand + _filter + "%'");
+        QSqlRelationalTableModel::setFilter(_filter_type + likeCommand + _filter + "%'");
     }
 
     select();
     emit filterChanged();
-    //qDebug() << QSqlTableModel::filter();
+    //qDebug() << QSqlRelationalTableModel::filter();
 }
 
 QString SqlInterfaceModel::filterType() const
@@ -148,7 +150,7 @@ QVariant SqlInterfaceModel::data(const QModelIndex &idx, int role) const
 {
     //qDebug() << QVariant(idx.row()) << "\t" << role - Qt::UserRole;
     if (role < Qt::UserRole) {
-        return QSqlTableModel::data(idx, role);
+        return QSqlRelationalTableModel::data(idx, role);
     }
 
     const QSqlRecord sqlRecord = record(idx.row());
@@ -161,16 +163,21 @@ QHash<int, QByteArray> SqlInterfaceModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
     roles[Qt::UserRole] = "id";
-    roles[Qt::UserRole + 1] = "name";
     if (_table == "Computers") {
+        roles[Qt::UserRole + 1] = "name";
         roles[Qt::UserRole + 2] = "year";
         roles[Qt::UserRole + 3] = "type";
         roles[Qt::UserRole + 4] = "made";
     } else if (_table == "People") {
+        roles[Qt::UserRole + 1] = "name";
         roles[Qt::UserRole + 2] = "born";
         roles[Qt::UserRole + 3] = "died";
         roles[Qt::UserRole + 4] = "gender";
         roles[Qt::UserRole + 5] = "nationality";
+    } else if (_table == "Relations") {
+        roles[Qt::UserRole + 1] = "computer_id";
+        roles[Qt::UserRole + 2] = "person_id";
+        roles[Qt::UserRole + 3] = "relationship";
     }
     return roles;
 }
@@ -180,7 +187,7 @@ bool SqlInterfaceModel::insertRow(int row)
     bool success = false;
     // If new entry hasn't been changed, don't add another one
     if (!isDirty()) {
-        success = QSqlTableModel::insertRow(row);
+        success = QSqlRelationalTableModel::insertRow(row);
         qDebug() << "c++ inserted" << success;
         //_unmodified_entry = success;
         //submit();

@@ -1,17 +1,19 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
+import QtQuick.Controls.Universal 2.0
 
 Item {
     id: item1
     width: 400
     height: 800
+
     property alias nameTextField: nameTextField
     property alias bornSpinBox: bornSpinBox
     property alias diedSpinBox: diedSpinBox
     property alias aliveCheckBox: aliveCheckBox
     property alias genderListView: genderListView
     property alias nationalityTextField: nationalityTextField
-    property alias relationListView: relationListView
+    property alias personRelationListView: personRelationListView
     property alias removeButton: removeButton
 
     TextField {
@@ -87,58 +89,17 @@ Item {
         anchors.rightMargin: 8
     }
 
-    ListView {
-        id: relationListView
+    RelationList {
+        id: personRelationListView
         clip: true
         anchors.top: parent.top
         anchors.topMargin: 238
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 54
         anchors.left: parent.left
-        anchors.leftMargin: 8
+        anchors.leftMargin: 0
         anchors.right: parent.right
-        anchors.rightMargin: 8
-        delegate: Item {
-            x: 5
-            width: 80
-            height: 40
-            Row {
-                id: row1
-                spacing: 10
-                Rectangle {
-                    width: 40
-                    height: 40
-                    color: colorCode
-                }
-
-                Text {
-                    text: name
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.bold: true
-                }
-            }
-        }
-        model: ListModel {
-            ListElement {
-                name: "Grey"
-                colorCode: "grey"
-            }
-
-            ListElement {
-                name: "Red"
-                colorCode: "red"
-            }
-
-            ListElement {
-                name: "Blue"
-                colorCode: "blue"
-            }
-
-            ListElement {
-                name: "Green"
-                colorCode: "green"
-            }
-        }
+        anchors.rightMargin: 0
     }
 
     Button {

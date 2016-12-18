@@ -81,7 +81,7 @@ PersonEntryForm {
             contentItem: Text {
                 leftPadding: genderRadioDelegate.indicator.width + genderRadioDelegate.spacing
                 text: modelData
-                color: Universal.background
+                color: Universal.foreground
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
@@ -102,7 +102,7 @@ PersonEntryForm {
                     anchors.fill: parent
                     radius: 10
                     color: "transparent"
-                    border.color: genderRadioDelegate.highlighted ? Universal.color(Universal.Indigo) : Universal.background
+                    border.color: genderRadioDelegate.highlighted ? Universal.color(Universal.Indigo) : Universal.foreground
                 }
                 Rectangle {
                     width: 10
@@ -110,7 +110,7 @@ PersonEntryForm {
                     x: 5
                     y: 5
                     radius: 5
-                    color: Universal.background
+                    color: Universal.foreground
                     visible: genderRadioDelegate.checked
                 }
             }
@@ -124,10 +124,14 @@ PersonEntryForm {
         }
     }
 
+
+
     removeButton.background: Rectangle {
+
         border.color: Universal.color(Universal.Red)
-        border.width: 5
-        radius: 5
-        color: removeButton.down ? Universal.color(Universal.Red) : Universal.foreground
+        border.width: 4
+        radius: 4
+        // This really wants to swap the BG with the FG
+        color: removeButton.down ? Universal.color(Universal.Red) : Universal.background
     }
 }

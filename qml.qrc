@@ -8,5 +8,6 @@
         <file>PersonEntryForm.ui.qml</file>
         <file>ListEntryDelegate.qml</file>
         <file>YearSpinBox.qml</file>
+        <file>RelationList.qml</file>
     </qresource>
 </RCC>
