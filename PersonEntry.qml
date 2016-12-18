@@ -4,38 +4,57 @@ import QtQuick.Controls.Universal 2.0
 
 PersonEntryForm {
     property string genderButtonState: "Unspecified"
+    property int previousDeath: 0
     nameTextField.onDisplayTextChanged: {
-        peoplePage.list.model.setValue("name", nameTextField.displayText)
+        if (nameTextField.activeFocus) {
+            peoplePage.list.model.setValue("name", nameTextField.displayText)
+        }
     }
     bornSpinBox.onValueChanged: {
-        peoplePage.list.model.setValue("born", bornSpinBox.value)
+        if (bornSpinBox.activeFocus) {
+            peoplePage.list.model.setValue("born", bornSpinBox.value)
+        }
     }
     diedSpinBox.onValueChanged: {
+        if (diedSpinBox.activeFocus) {
         peoplePage.list.model.setValue("died", diedSpinBox.value)
+           }
     }
-    aliveCheckBox.onCheckStateChanged: {
+    aliveCheckBox.onClicked: {
+        if (aliveCheckBox.activeFocus) {
+        console.log("Alive changed! ", aliveCheckBox.checkState)
         if (aliveCheckBox.checkState == 2) {
-            peoplePage.list.model.setValue("died", 0)
+            console.log("died now: ", 0)
+            diedSpinBox.from = 0
+            diedSpinBox.value = 0
             diedSpinBox.enabled = false
+            peoplePage.list.model.setValue("died", 0)
         } else {
-            peoplePage.list.model.setValue("died", diedSpinBox.value)
+            console.log("died then: ", diedSpinBox.value)
             diedSpinBox.enabled = true
+            peoplePage.list.model.setValue("died", diedSpinBox.value)
+            diedSpinBox.from = bornSpinBox.value
+            diedSpinBox.value = 2017
         }
-    }/*
-    genderListView: {
-        console.log("gender changed")
-        peoplePage.list.model.setValue("gender", genderButtonState)
-    }*/
+        }
+    }
     nationalityTextField.onDisplayTextChanged: {
+        if (nationalityTextField.activeFocus) {
         peoplePage.list.model.setValue("nationality", nationalityTextField.displayText)
+        }
     }
     removeButton.onReleased: {
+        peoplePage.list.model.removeWorkingRow()
+        if (peoplePage.list.count == peoplePage.workingRow) {
+            peoplePage.list.decrementCurrentIndex()
+        }
     }
     bornSpinBox {
         editable: true
     }
     diedSpinBox {
         editable: true
+        // TODO: textFromValue:
     }
 
     genderListView {

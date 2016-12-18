@@ -5,23 +5,34 @@ import QtQuick.Controls.Universal 2.0
 ComputerEntryForm {
 
     nameTextField.onDisplayTextChanged: {
-        computerPage.list.model.setValue("name", nameTextField.displayText)
+        if (nameTextField.activeFocus) {
+            computerPage.list.model.setValue("name", nameTextField.displayText)
+        }
     }
+
     yearSpinBox.onValueChanged: {
-        computerPage.list.model.setValue("year", yearSpinBox.value)
+        if (yearSpinBox.activeFocus) {
+            computerPage.list.model.setValue("year", yearSpinBox.value)
+        }
     }
     builtCheckBox.onCheckStateChanged: {
-        computerPage.list.model.setValue("made", builtCheckBox.checkState / 2)
+        if (builtCheckBox.activeFocus) {
+            computerPage.list.model.setValue("made", builtCheckBox.checkState / 2)
+        }
     }
     typeTextField.onDisplayTextChanged: {
-        computerPage.list.model.setValue("type", typeTextField.displayText)
-
+        if (typeTextField.activeFocus) {
+            computerPage.list.model.setValue("type", typeTextField.displayText)
+        }
     }
 
     removeButton.onReleased: {
+        computerPage.list.model.removeWorkingRow()
+        if (computerPage.list.count == computerPage.workingRow) {
+            computerPage.list.decrementCurrentIndex()
+        }
     }
-    typeTextField.onAccepted: {
-    }
+
     relationListView.onActiveFocusChanged: {
     }
     yearSpinBox {

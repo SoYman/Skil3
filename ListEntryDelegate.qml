@@ -6,7 +6,6 @@ import QtQuick.Layouts 1.0
 import com.soyman.sqlinterfacemodel 1.0
 
 ItemDelegate {
-    highlighted: ListView.isCurrentItem
     width: parent.width
-    
+    highlighted: ListView.isCurrentItem
 }

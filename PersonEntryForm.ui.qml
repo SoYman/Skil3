@@ -40,7 +40,8 @@ Item {
         id: diedSpinBox
         x: 8
         y: 100
-        from: bornSpinBox.value
+        from: 0
+        value: 0
         to: 2017
     }
 

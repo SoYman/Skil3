@@ -24,7 +24,6 @@ ApplicationWindow {
 
         SplitView {
             id: computerView
-            property int computerWorkingRow: -1
 
             ComputerEntry {
                 id: computerEntry
@@ -34,39 +33,25 @@ ApplicationWindow {
             BaseList {
                 id: computerPage
                 Layout.minimumWidth: 333
-                property string computerFilter
-                property string computerFilterType
 
                 filterTypeBox {
                     model: ["Name", "Year", "Type", "Made", "ID"]
-                    onDisplayTextChanged: {
-                        computerPage.computerFilterType = filterTypeBox.currentText
-                    }
                 }
 
                 filterField.onDisplayTextChanged: {
-                    computerPage.computerFilter = filterField.displayText
+                    computerPage.filter = filterField.displayText
                 }
 
                 list.model: SqlInterfaceModel {
                     table: "Computers"
-                    filter: computerPage.computerFilter
-                    filterType: computerPage.computerFilterType
-                    workingRow: computerView.computerWorkingRow
+                    filter: computerPage.filter
+                    filterType: computerPage.filterType
+                    workingRow: computerPage.workingRow
                 }
 
                 list.delegate: computerItemDelegate
 
-                //baseItemDelegate {
-                    // Display computer in sidebar
-//                    onClicked: {
-//                        computerView.computerWorkingRow = model.row
-//                        computerEntry.nameTextField.text = model.name
-//                        computerEntry.yearSpinBox.value = model.year
-//                        computerEntry.builtCheckBox.checkState = model.made * 2
-//                        computerEntry.typeTextField.text = model.type
-//                    }
-                //}
+
             }
 
             Component {
@@ -74,8 +59,11 @@ ApplicationWindow {
                 ListEntryDelegate {
                     onClicked: {
                         computerPage.list.currentIndex = index
-                        console.log("Index: ", index)
-                        computerView.computerWorkingRow = index
+                    }
+
+
+                    onHighlightedChanged: {
+                        computerPage.workingRow = index
                         computerEntry.nameTextField.text = model.name
                         computerEntry.yearSpinBox.value = model.year
                         computerEntry.builtCheckBox.checkState = model.made * 2
@@ -97,43 +85,50 @@ ApplicationWindow {
             BaseList {
                 id: peoplePage
                 Layout.minimumWidth: 333
-                property string peopleFilter
-                property string peopleFilterType
-                property int peopleWorkingRow: -1
+//                property string peopleFilter
+//                property string peopleFilterType
+  //              property int peopleWorkingRow: -1
 
                 filterTypeBox {
                     model: ["Name", "Born", "Died", "Gender", "Nationality"]
-                    onDisplayTextChanged: {
-                        peopleFilterType = filterTypeBox.currentText
-                    }
                 }
 
                 filterField.onDisplayTextChanged: {
-                    peopleFilter = filterField.displayText
+                    filter = filterField.displayText
                 }
 
                 list.model: SqlInterfaceModel {
                     table: "People"
-                    filter: peoplePage.peopleFilter
-                    filterType: peoplePage.peopleFilterType
-                    workingRow: peoplePage.peopleWorkingRow
+                    filter: peoplePage.filter
+                    filterType: peoplePage.filterType
+                    workingRow: peoplePage.workingRow
                 }
 
                 list.delegate: peopleItemDelegate
+
+                addButton.onClicked: {
+                    list.model.insertRow(workingRow)
+                    list.currentIndex = workingRow
+                }
             }
 
             Component {
                 id: peopleItemDelegate
                 ListEntryDelegate {
                     onClicked: {
-                        computerPage.list.currentIndex = index
-                        console.log("index: ", index)
-                        peoplePage.peopleWorkingRow = index
+                        peoplePage.list.currentIndex = index
+                    }
+
+                    onHighlightedChanged: {
+                        peoplePage.workingRow = index
                         personEntry.nameTextField.text = model.name
                         personEntry.bornSpinBox.value = model.born
-                        personEntry.diedSpinBox.from = model.born
+                        // This was easy to make:rR
+                        personEntry.diedSpinBox.from = 0
+                        personEntry.diedSpinBox.enabled = model.born <= model.died
                         personEntry.diedSpinBox.value = model.died
-                        personEntry.aliveCheckBox.checkState = Number(model.died < model.born) * 2
+                        personEntry.diedSpinBox.from = model.born > model.died ? 0 : model.born
+                        personEntry.aliveCheckBox.checkState = model.born > model.died ? 2 : 0
                         personEntry.genderButtonState = model.gender
                         personEntry.nationalityTextField.text = model.nationality
                     }

@@ -6,7 +6,9 @@
 #include <QSqlQuery>
 #include <QSqlField>
 
-SqlInterfaceModel::SqlInterfaceModel(QObject *parent) : QSqlTableModel(parent) {}
+SqlInterfaceModel::SqlInterfaceModel(QObject *parent) : QSqlTableModel(parent) {
+    _sort_order = Qt::DescendingOrder;
+}
 
 QString SqlInterfaceModel::table() const
 {
@@ -28,8 +30,6 @@ void SqlInterfaceModel::setTable(const QString &tableName)
                         "type TEXT,"
                         "made INTEGER)")) {
                 qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
-            } else {
-                empty = true;
             }
         }
     } else if (tableName == "People") {
@@ -43,8 +43,6 @@ void SqlInterfaceModel::setTable(const QString &tableName)
                         "gender TEXT,"
                         "nationality TEXT)")) {
                 qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
-            } else {
-                empty = true;
             }
         }
     } else if (tableName == "Relations") {
@@ -58,10 +56,13 @@ void SqlInterfaceModel::setTable(const QString &tableName)
             qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
         }
     }
+    if (QSqlDatabase::database().record(tableName).count() == 0) {
+        empty = true;
+    }
 
     QSqlTableModel::setTable(tableName);
-    setSort(0, Qt::DescendingOrder);
-    setEditStrategy(QSqlTableModel::OnFieldChange);
+    setSort(0, _sort_order);
+    setEditStrategy(QSqlTableModel::OnManualSubmit);
     if (empty) {
         QSqlRecord rec = record();
         if (tableName == "Computers") {
@@ -103,7 +104,7 @@ void SqlInterfaceModel::setFilter(const QString &filter)
 
     select();
     emit filterChanged();
-    qDebug() << QSqlTableModel::filter();
+    //qDebug() << QSqlTableModel::filter();
 }
 
 QString SqlInterfaceModel::filterType() const
@@ -113,18 +114,25 @@ QString SqlInterfaceModel::filterType() const
 
 void SqlInterfaceModel::setFilterType(const QString &filterType)
 {
-    if (filterType.toLower() == _filter_type) {
-        return;
+    // if the same filter is selected the order is swapped
+    if (filterType == _filter_type) {
+        if (_sort_order == Qt::DescendingOrder) {
+            _sort_order = Qt::AscendingOrder;
+        } else {
+            _sort_order = Qt::DescendingOrder;
+        }
+    } else {
+        _sort_order = Qt::DescendingOrder;
     }
 
-    _filter_type = filterType.toLower();
+        _filter_type = filterType;
 
-    setFilter(_filter);
+        setFilter(_filter);
 
-    setSort(fieldIndex(_filter_type), Qt::DescendingOrder);
+    setSort(fieldIndex(_filter_type), _sort_order);
     select();
-
     emit filterTypeChanged();
+    qDebug() << filterType << " and " << orderByClause();
 }
 
 qint64 SqlInterfaceModel::workingRow() const
@@ -170,6 +178,20 @@ QHash<int, QByteArray> SqlInterfaceModel::roleNames() const
     return roles;
 }
 
+bool SqlInterfaceModel::insertRow(int row)
+{
+    bool success = false;
+    // If new entry hasn't been changed, don't add another one
+    if (!isDirty()) {
+        success = QSqlTableModel::insertRow(row);
+        qDebug() << "c++ inserted" << success;
+        //_unmodified_entry = success;
+        //submit();
+    }
+    return success;
+
+}
+
 void SqlInterfaceModel::setValue(const QString &field, const QVariant &val)
 {
     QSqlRecord sqlRecord = record(_working_row);
@@ -181,8 +203,20 @@ void SqlInterfaceModel::setValue(const QString &field, const QVariant &val)
     sqlRecord.setGenerated(field, true);
     sqlRecord.setValue(field, val);
 
-    //qDebug() << "data is:  " << sqlRecord.value(field) << endl;
-    //qDebug() << "the working row is " << _working_row << " or " << endl;
-    qDebug() << setRecord(_working_row, sqlRecord);
-    //submit();
+
+    //qDebug() << "data is:  " << sqlRecord.value(field);
+    //qDebug() << "the working row is " << _working_row;
+    setRecord(_working_row, sqlRecord);
+    submitAll();
+}
+
+bool SqlInterfaceModel::removeWorkingRow()
+{
+    bool success = removeRow(_working_row);
+    //endRemoveRows();
+    if (success) {
+        select();
+        submitAll();
+    }
+    return success;
 }

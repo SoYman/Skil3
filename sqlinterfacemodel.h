@@ -23,7 +23,7 @@ public:
     void setFilter(const QString &filter) override;
 
     QString filterType() const;
-    void setFilterType(const QString &filterType);
+    Q_INVOKABLE void setFilterType(const QString &filterType);
 
     qint64 workingRow() const;
     void setWorkingRow(qint64 &workingId);
@@ -33,7 +33,9 @@ public:
 
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
+    Q_INVOKABLE bool insertRow(int row);
     Q_INVOKABLE void setValue(const QString &field, const QVariant &val);
+    Q_INVOKABLE bool removeWorkingRow();
 
 signals:
     void tableChanged();
@@ -46,7 +48,8 @@ private:
     QString _filter;
     QString _filter_type;
     qint64 _working_row;
-    bool _descending;
+    bool _unmodified_entry;
+    Qt::SortOrder _sort_order;
 
     qint64 _filterTypeEnum();
 };
