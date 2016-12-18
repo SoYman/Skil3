@@ -33,6 +33,7 @@ ApplicationWindow {
             id: computerView
             activeFocusOnTab: false
             property string relationKeyId
+            property int relationWorkingRow: relationWorkingRow
 
             ComputerEntry {
                 id: computerEntry
@@ -43,6 +44,7 @@ ApplicationWindow {
                         relationColumn: Number(2)
                         filterType: "computer_id"
                         filter: computerView.relationKeyId
+                        workingRow: computerView.relationWorkingRow
                     }
                     relationList.delegate: computerRelationDelegate
                     relationCandidateList.model: SqlInterfaceModel {
@@ -56,12 +58,11 @@ ApplicationWindow {
                 id: computerRelationDelegate
                 ItemDelegate {
                     width: parent.width
+                    text: model.person_id
                     onClicked: {
-
+                        computerView.relationWorkingRow = index
+                        computerEntry.computerRelationListView.relationList.model.removeWorkingRow()
                     }
-                    //contentItem: Text {
-                        text: model.person_id
-                    //}
                 }
             }
 
@@ -70,6 +71,7 @@ ApplicationWindow {
                 ItemDelegate {
                     width: parent.width
                     onClicked: {
+                        // Oh boy
                         computerEntry.computerRelationListView.relationList.model.makeRelation(Number(computerView.relationKeyId), Number(model.id))
                     }
                     text: model.name
@@ -142,6 +144,7 @@ ApplicationWindow {
             activeFocusOnTab: false
             property int personRelationColumn: 1
             property string relationKeyId
+            property int relationWorkingRow: relationWorkingRow
 
             PersonEntry {
                 id: personEntry
@@ -152,25 +155,38 @@ ApplicationWindow {
                         relationColumn: Number(1)
                         filterType: "person_id"
                         filter: personView.relationKeyId
+                        workingRow: personView.relationWorkingRow
                     }
                     relationList.delegate: personRelationDelegate
                     relationCandidateList.model: SqlInterfaceModel {
-
+                        table: "Computers"
                     }
+                    relationCandidateList.delegate: personCandidateDelegate
                 }
             }
             Component {
                 id: personRelationDelegate
                 ItemDelegate {
                     width: parent.width
+                    text: model.computer_id
                     onClicked: {
-
+                        personView.relationWorkingRow = index
+                        personEntry.personRelationListView.relationList.model.removeWorkingRow()
                     }
-                    //contentItem: Text {
-                        text: model.computer_id
-                    //}
                 }
             }
+
+            Component {
+                id: personCandidateDelegate
+                ItemDelegate {
+                    width: parent.width
+                    text: model.name
+                    onClicked: {
+                        personEntry.personRelationListView.relationList.model.makeRelation(model.id, personView.relationKeyId)
+                    }
+                }
+            }
+
             BaseList {
                 id: peoplePage
                 Layout.minimumWidth: 333

@@ -266,21 +266,13 @@ bool SqlInterfaceModel::removeWorkingRow()
 void SqlInterfaceModel::makeRelation(const qint64 &computerId, const qint64 &personId)
 {
     if (_is_relational) {
-        //clear();
-        //qDebug() << "inserting " << insertRow(0);
         QSqlRecord sqlRecord = record(0);
         sqlRecord.setGenerated("id", false);
-        sqlRecord.setGenerated("computer_id", true);
-        sqlRecord.setGenerated("person_id", true);
-        qDebug() << sqlRecord.fieldName(0) << sqlRecord.fieldName(1) << sqlRecord.fieldName(2);
         sqlRecord.setValue(1, QVariant(computerId));
-        qDebug() << "data is:  " << sqlRecord.value(1);
         sqlRecord.setValue(2, QVariant(personId));
-        qDebug() << "data is:  " << sqlRecord.value("person_id");
-        qDebug() << insertRecord(-1, sqlRecord);
-        qDebug() << table();
-        qDebug() << submitAll();
-        qDebug() << lastError();
-        //sort(0, _sort_order);
+        insertRecord(-1, sqlRecord);
+        submitAll();
+        sort(1, _sort_order);
+        select();
     }
 }
