@@ -20,7 +20,6 @@ ApplicationWindow {
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
         onCurrentIndexChanged: {
-            console.log("index diff ", currentIndex)
             computerEntry.computerRelationListView.relationCandidateList.model.setIdSort()
             computerEntry.computerRelationListView.relationList.model.setIdSort()
             personEntry.personRelationListView.relationCandidateList.model.setIdSort()
@@ -182,7 +181,6 @@ ApplicationWindow {
                     width: parent.width
                     text: model.name
                     onClicked: {
-                        console.log(model.id, personView.relationKeyId)
                         personEntry.personRelationListView.relationList.model.makeRelation(model.id, personView.relationKeyId)
                     }
                 }
@@ -266,8 +264,5 @@ ApplicationWindow {
         TabButton {
             text: qsTr("People")
         }
-//        TabButton {
-//            text: qsTr("Relations")
-//        }
     }
 }

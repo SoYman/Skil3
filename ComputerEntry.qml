@@ -29,7 +29,6 @@ ComputerEntryForm {
     }
 
     removeButton.onReleased: {
-        console.log("REMOVE")
         computerPage.list.model.removeWorkingRow()
         if (computerPage.list.count == computerPage.baseWorkingRow) {
             computerPage.list.decrementCurrentIndex()

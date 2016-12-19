@@ -49,7 +49,6 @@ PersonEntryForm {
     }
 
     removeButton.onReleased: {
-        console.log("REMOVE")
         peoplePage.list.model.removeWorkingRow()
         if (peoplePage.list.count == peoplePage.baseWorkingRow) {
             peoplePage.list.decrementCurrentIndex()

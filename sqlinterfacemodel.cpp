@@ -67,8 +67,6 @@ void SqlInterfaceModel::setTable(const QString &tableName)
     setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
     if (_is_relational) {
 
-        setRelation(1, QSqlRelation("Computers", "id", "name"));
-        setRelation(2, QSqlRelation("People", "id", "name"));
     }
     if (empty) {
         QSqlRecord rec = record();
@@ -162,7 +160,11 @@ qint64 SqlInterfaceModel::relationColumn() const
 void SqlInterfaceModel::setRelationColumn(qint64 &relationColumn)
 {
     _relation_column = relationColumn;
-
+    if (_relation_column == 1) {
+        setRelation(1, QSqlRelation("Computers", "id", "name"));
+    } else {
+        setRelation(2, QSqlRelation("People", "id", "name"));
+    }
     emit relationColumnChanged();
 }
 
@@ -201,14 +203,14 @@ QHash<int, QByteArray> SqlInterfaceModel::roleNames() const
 
 bool SqlInterfaceModel::insertRow(int row)
 {
-    emit beginInsertRows(index(row, 0), row, row);
+    //emit beginInsertRows(index(row, 0), row, row);
     bool success = false;
     // If new entry hasn't been changed, don't add another one
     if (!isDirty()) {
         success = QSqlRelationalTableModel::insertRow(row);
     }
     return success;
-    emit endInsertRows();
+    //emit endInsertRows();
 }
 
 void SqlInterfaceModel::setIdSort()
@@ -224,7 +226,6 @@ void SqlInterfaceModel::setValue(const QString &field, const QVariant &val)
     sqlRecord.setValue(field, val);
 
     setRecord(_working_row, sqlRecord);
-    //emit dataChanged();
     submitAll();
 }
 
@@ -239,14 +240,13 @@ bool SqlInterfaceModel::removeWorkingRow()
 void SqlInterfaceModel::makeRelation(const qint64 &computerId, const qint64 &personId)
 {
     if (_is_relational) {
+
+
         QSqlRecord sqlRecord = record(0);
         sqlRecord.setGenerated("id", false);
-        qDebug() << sqlRecord.fieldName(0) << sqlRecord.fieldName(1) << sqlRecord.fieldName(2);
         sqlRecord.setValue(1, QVariant(computerId));
         sqlRecord.setValue(2, QVariant(personId));
-        qDebug() <<
-        insertRecord(-1, sqlRecord);
-        qDebug() <<
+        insertRecord(0, sqlRecord);
         submitAll();
         sort(0, _sort_order);
         select();
